@@ -1,0 +1,60 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+
+/* In your CSS file */
+:root {
+  --primary-color: #F0635A;
+  --secondary-color: #F9C26B;
+  --border-color: #B389D4;
+  --success-light: #4BA79A;
+  --text-light: #344B64;
+  --bg-light: #fafaef;
+}
+
+[data-theme="dark"] {
+  --primary-color: #F26D65;
+  --secondary-color: #F9C268;
+  --border-color: #BB8ADF;
+  --success-dark: #56B3A7;
+  --text-dark: #445D7A;
+  --bg-dark: #1C1C1E;
+}
+
+/* Use variables in your styles */
+.bg-light {
+  background-color: var(--bg-light);
+}
+
+.bg-dark {
+  background-color: var(--bg-dark);
+}
+
+.titleFontSize {
+  font-size: 30px;
+}
+
+.subTitleFontSize {
+  font-size: 13px;
+}
+
+
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #213547;
+    background-color: #ffffff;
+  }
+  a:hover {
+    color: #747bff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
+}
