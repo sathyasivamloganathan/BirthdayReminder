@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { timeZones } from "../../components/timezones";
+import { timeZones } from "../../components/Timezones";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
