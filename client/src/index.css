@@ -45,6 +45,10 @@
   font-size: 13px;
 }
 
+.custom-scrollbar {
+  scrollbar-width: thin;
+  scrollbar-color: #566968 transparent;
+}
 
 @media (prefers-color-scheme: light) {
   :root {

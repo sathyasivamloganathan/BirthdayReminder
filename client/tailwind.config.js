@@ -20,9 +20,11 @@ export default {
         successDark: "#56B3A7",
         textDark: "#ccd5e0",
         bgDark: "#1C1C1E",
+
+        
       },
       screens: {
-        'only-sm': {'min': '640px', 'max': '767px'},
+        "only-sm": { min: "640px", max: "767px" },
       },
     },
   },

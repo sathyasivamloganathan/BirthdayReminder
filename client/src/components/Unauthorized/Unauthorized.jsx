@@ -28,7 +28,7 @@ const Unauthorized = () => {
 
       {auth?.token ? (
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/home")}
           className="mt-6 px-6 py-2 bg-successLight text-white rounded-md hover:bg-secondaryLight transition-all dark:bg-successDark dark:hover:bg-secondaryDark"
         >
           Go to Home

@@ -227,7 +227,7 @@ export const getUpcomingBirthdays = async (req, res) => {
 export const todayBirthdaysController = async (req, res) => {
   try {
     const userId = getUserId(req);
-    const user = await User.find({ userId });
+    const user = await User.findOne({ _id: userId });
     const timezone = user.timeZone || "Asia/Kolkata";
     const today = moment().tz(timezone).startOf("day");
 

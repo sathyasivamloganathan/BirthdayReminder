@@ -6,7 +6,6 @@ export const ThemeProvider = ({children}) => {
     const [ theme, setTheme ] = useState(() => localStorage.getItem('theme') || 'light');
     console.log(theme)
     useEffect(() => {
-      console.log("Applying theme:", theme);
       const root = document.documentElement;
       if (theme === "dark") {
         root.classList.add("dark");

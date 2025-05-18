@@ -121,7 +121,6 @@ const PartyIcon = () => {
   );
 };
 
-
 const UnauthorizedError = () => {
   return (
     <svg
@@ -270,7 +269,7 @@ const UnauthorizedError = () => {
       />
     </svg>
   );
-}
+};
 
 const ProfileDesignCard = () => {
   return (
@@ -309,5 +308,5 @@ const ProfileDesignCard = () => {
       ></path>
     </svg>
   );
-}
+};
 export { PartyIcon, UnauthorizedError, ProfileDesignCard };

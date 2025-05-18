@@ -11,7 +11,7 @@ route.put("/updateSpecificBirthday/:id", updateSpecificBirthdayController);
 route.delete("/deleteBirthdayAdded/:id", deleteBirthdayController);
 
 route.get("/getUpcomingBirthdays", getUpcomingBirthdays);
-route.get("/todayBirthday", todayBirthdaysController);
+route.get("/todayBirthdays", todayBirthdaysController);
 
 
 
