@@ -45,11 +45,11 @@ function App() {
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/verifyEmail" element={<VerifyEmail />} />
 
-        <Route element={<ProtectedRoute />}>
+      
           <Route path="/profile" element={<Profile />} />
           <Route path="/addbirthday" element={<AddBirthday />} />
           <Route path="/home" element={<ListAllBirthdays />} />
-        </Route>
+        
         <Route path="/*" element={<Unauthorized />} />
       </Routes>
     </div>
