@@ -38,7 +38,7 @@ function App() {
       </button>
 
       <ToastContainer />
-      {auth?.token ? <Navbar /> : ""}
+      <Navbar />
       <Routes>
         <Route path="/" element={<Navigate to="/auth/register" replace />} />
         <Route path="/auth/register" element={<Register />} />
