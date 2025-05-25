@@ -1,11 +1,11 @@
-import bcrypt, { hashSync } from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 const SaltRounds = 10;
 
 export const hashPassword = (password) => {
   const salt = bcrypt.genSaltSync(SaltRounds);
-  return hashSync(password, salt);
+  return bcrypt.hashSync(password, salt);
 };
 
 export const comparePassword = (password, hashedPassword) => {
