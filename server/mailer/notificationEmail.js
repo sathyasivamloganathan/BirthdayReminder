@@ -3,14 +3,14 @@ import nodemailer from "nodemailer";
 export const transport = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "paperemail2456@gmail.com",
-    pass: "qghi bmlw loat fxoi",
+    user: process.env.NODEMAILER_EMAIL,
+    pass: process.env.NODEMAILER_PASS,
   },
 });
 
 export const sendMail = async (userEmail, userName, birthdayPName, date) => {
   const mailOptions = {
-    from: "paperemail2456@gmail.com",
+    from: process.env.NODEMAILER_EMAIL,
     to: userEmail,
     subject: `Remainder: ${birthdayPName} birthday is coming!!`,
     html: `<div style="font-family: Arial, sans-serif; background-color: #f7f7f7; padding: 20px;">
@@ -34,7 +34,7 @@ export const sendTodayMail = async (
   date
 ) => {
   const mailOptions = {
-    from: "paperemail2456@gmail.com",
+    from: process.env.NODEMAILER_EMAIL,
     to: userEmail,
     subject: `Today is ${birthdayPName}'s Birthday!!`,
     html: `<div style="font-family: Arial, sans-serif; background-color: #fffcf5; padding: 20px;">

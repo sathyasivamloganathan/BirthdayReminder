@@ -10,8 +10,8 @@ import {
   groupBirthdaysByMonth,
 } from "../../utils/BirthdayUtils";
 import { darkColors, lightColors } from "../../utils/colorThemes";
-import SeeAllBirthdays from "./SeeAllBirthdays";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../apiConfig";
 
 const ListAllBirthdays = () => {
   const { auth } = useAuth();
@@ -24,7 +24,7 @@ const ListAllBirthdays = () => {
   const navigate = useNavigate();
   const getTodayBirthdays = async () => {
     try {
-      const res = await axios.get("http://localhost:7000/api/todayBirthdays", {
+      const res = await axios.get(`${API_URL}/api/todayBirthdays`, {
         headers: {
           Authorization: `Bearer ${auth.token}`,
         },
@@ -42,14 +42,11 @@ const ListAllBirthdays = () => {
 
   const getUpcomingBirthdays = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:7000/api/getUpcomingBirthdays",
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        }
-      );
+      const res = await axios.get(`${API_URL}/api/getUpcomingBirthdays`, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
       if (res) {
         setUpcomingBirthdays(res?.data?.processedBirthdays || []);
       }
@@ -61,16 +58,14 @@ const ListAllBirthdays = () => {
     }
   };
 
+  
   const getAllBirthdays = async () => {
     try {
-      const res = await axios.get(
-        "http://localhost:7000/api/getBirthdaysAdded",
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        }
-      );
+      const res = await axios.get(`${API_URL}/api/getBirthdaysAdded`, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
       if (res) {
         setFutureBirthdays(res?.data?.processedBirthdays || []);
         setGroupedByMonth(

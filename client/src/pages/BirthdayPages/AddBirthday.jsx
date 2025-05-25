@@ -3,6 +3,7 @@ import whiteBlue from "../../assets/whiteBlue.webp";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../apiConfig";
 
 
 const remainderTypes = ["Email", "SMS", "Push Notification"];
@@ -105,14 +106,11 @@ const AddBirthdayPage = () => {
       console.log(form)
       // Send request
       setLoadingPage(true);
-      const res = await axios.post(
-        "http://localhost:7000/api/addBirthday",
-        formData, {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          }
-        }
-      );
+      const res = await axios.post(`${API_URL}/api/addBirthday`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
       console.log(res);
       setLoadingPage(false);
       toast.success("Birthday Added Successfully !!");

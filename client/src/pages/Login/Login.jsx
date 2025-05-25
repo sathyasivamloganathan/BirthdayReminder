@@ -6,6 +6,7 @@ import axios from "axios";
 import { useAuth } from "../../context/auth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
+import { API_URL } from "../../apiConfig";
 
 const Login = () => {
 
@@ -28,7 +29,7 @@ const Login = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const res = await axios.post("http://localhost:7000/api/auth/login", {
+      const res = await axios.post(`${API_URL}/api/auth/login`, {
         email: formData.email,
         password: formData.password,
       });

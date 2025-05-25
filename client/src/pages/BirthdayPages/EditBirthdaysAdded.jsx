@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth";
+import { API_URL } from "../../apiConfig";
 
 const remainderTypes = ["Email", "SMS", "Push Notification"];
 const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
@@ -107,7 +108,7 @@ const EditBirthdaysAdded = () => {
       // Send request
       setLoadingPage(true);
       const res = await axios.put(
-        `http://localhost:7000/api/updateSpecificBirthday/${selectedUser._id}`,
+        `${API_URL}/api/updateSpecificBirthday/${selectedUser._id}`,
         formData,
         {
           headers: {

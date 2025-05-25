@@ -16,6 +16,7 @@ import {
 import { SkeletonLoader } from "../../components/SkeletonLoader";
 import { ProfileDesignCard } from "../../components/svgIcons/svgIcon";
 import { ThemeContext } from "../../context/ThemeContext";
+import { API_URL } from "../../apiConfig";
 
 const Profile = () => {
   const [completion, setCompletion] = useState(0);
@@ -86,14 +87,11 @@ const Profile = () => {
   const getProfileDetails = async () => {
     try {
       setLoadingPage(true);
-      const res = await axios.get(
-        "http://localhost:7000/api/auth/get-profile",
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        }
-      );
+      const res = await axios.get(`${API_URL}/api/auth/get-profile`, {
+        headers: {
+          Authorization: `Bearer ${auth.token}`,
+        },
+      });
       if (res && res.data) {
         const data = res.data;
         setProfile({
@@ -153,7 +151,7 @@ const Profile = () => {
       // Send request
       setLoadingPage(true);
       const res = await axios.put(
-        "http://localhost:7000/api/auth/updateProfile",
+        `${API_URL}/api/auth/updateProfile`,
         formData
       );
       setLoadingPage(false);

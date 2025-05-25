@@ -7,6 +7,7 @@ import BirthdayProfileView from "../../components/BirthdayCards/BirthdayProfileV
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
+import { API_URL } from "../../apiConfig";
 
 
 const SeeAllBirthdays = () => {
@@ -29,7 +30,7 @@ const SeeAllBirthdays = () => {
   const handleDelete = async (id) => {
     try {
       const res = await axios.delete(
-        `http://localhost:7000/api/deleteBirthdayAdded/${id}`,
+        `${API_URL}/api/deleteBirthdayAdded/${id}`,
         {
           headers: {
             Authorization: `Bearer ${auth.token}`,

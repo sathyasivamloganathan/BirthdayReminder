@@ -4,8 +4,8 @@ import nodemailer from  "nodemailer";
 const transport = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "paperemail2456@gmail.com",
-    pass: "qghi bmlw loat fxoi",
+    user: process.env.NODEMAILER_EMAIL,
+    pass: process.env.NODEMAILER_PASS,
   },
 });
 
@@ -14,9 +14,9 @@ export const generateVerificationToken = () => {
 };
 
 export const sendVerificationEmail = async(userEmail, verificationToken) => {
-    const verificationLink = `http://localhost:7000/api/auth/verify-email?token=${verificationToken}`;
+    const verificationLink = `${process.env.SERVER_URL}/api/auth/verify-email?token=${verificationToken}`;
     const mailOptions = {
-      from: "paperemail2456@gmail.com",
+      from: process.env.NODEMAILER_EMAIL,
       to: userEmail,
       subject: "Birthday Remainder - Email Verification",
       html: `<h3>Thanks for registering Birthday Remainder website.</h3><h3>Click the link to verify your email:</h3> <a href="${verificationLink}">Click here to Verify Email</a>`,

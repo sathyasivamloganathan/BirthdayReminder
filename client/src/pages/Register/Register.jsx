@@ -11,6 +11,7 @@ import Form from "../../components/ResusableForm/Form";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
+import { API_URL } from "../../apiConfig";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -41,7 +42,7 @@ const Register = () => {
         setLoading(false);
         return toast.error("Password must be min 8");
       }
-      const res = await axios.post("http://localhost:7000/api/auth/register", {
+      const res = await axios.post(`${API_URL}/api/auth/register`, {
         name: formData.name,
         dob: formData.dob,
         mobile: formData.mobile,
