@@ -1,5 +1,4 @@
 import express from "express"
-import mongoose from "mongoose"
 import authRoute from  "./routes/authRoute.js"
 import birthdayRoute from "./routes/birthdayRoute.js"
 import dotenv from 'dotenv'
@@ -26,10 +25,11 @@ app.use('/api/auth', authRoute)
 app.use('/api', authenticateUser, birthdayRoute)
 
 
-cron.schedule("0 7 * * *", () => {
+cron.schedule("0 19 * * *", () => {
+    console.log("Checking Birthdays....")
     checkAndSendBirthdayRemainders();
 })
 
-app.listen(PORT, (req, res) => {
+app.listen(PORT, '0.0.0.0', (req, res) => {
     console.log(`Port ${PORT} Connected`)
 })

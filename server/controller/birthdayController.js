@@ -30,7 +30,7 @@ export const addBirthdayController = async (req, res) => {
       remainderTimeOfDay,
       birthdayRemainderOnTheDay,
       repeatYearly,
-      customMessage
+      customMessage,
     };
 
     if (req.file) {
@@ -42,29 +42,72 @@ export const addBirthdayController = async (req, res) => {
 
     const birthday = new BirthdayRemainderSchema({
       userId,
-      ...updateFields
+      ...updateFields,
     });
 
     const birthdayAdded = await birthday.save();
     return res.status(201).json({ message: "Birthday Added", birthdayAdded });
   } catch (error) {
-    return res
-      .status(500)
-      .json({ message: "Error at Adding Birthday Controller: ", error: error.message || error });
+    return res.status(500).json({
+      message: "Error at Adding Birthday Controller: ",
+      error: error.message || error,
+    });
   }
 };
 
 export const getAllBirthday = async (req, res) => {
   try {
     const userId = getUserId(req);
+    const user = await User.find({ _id: userId });
+    const timezone = user.timeZone || "Asia/Kolkata";
+    const today = moment().tz(timezone).startOf("day");
     const birthdaysAdded = await BirthdayRemainderSchema.find({ userId });
+
+    const upcoming = birthdaysAdded.map((b) => {
+      const bDate = moment(b.birthdayDate);
+      let adjusted = moment({
+        year: today.year(),
+        month: bDate.month(),
+        date: bDate.date(),
+      });
+      if (adjusted.isBefore(today)) {
+        adjusted = adjusted.add(1, "year");
+      }
+      const daysLeft = adjusted.diff(today, "days");
+      return {
+        ...b.toObject(),
+        remainingDays: daysLeft,
+        adjustedDate: adjusted,
+      };
+    });
+
+    const processedBirthdays = upcoming.map((b) => {
+      if (b.profileImage?.data) {
+        return {
+          ...b,
+          profileImage: `data:${
+            b.profileImage.contentType
+          };base64,${b.profileImage.data.toString("base64")}`,
+        };
+      }
+      return b;
+    });
+
+    processedBirthdays.sort((a, b) => {
+      const aDate = moment(a.birthdayDate);
+      const bDate = moment(b.birthdayDate);
+      return moment({ month: aDate.month(), day: aDate.date() }).diff(
+        moment({ month: bDate.month(), day: bDate.date() })
+      );
+    });
+
     return res
       .status(201)
-      .json({ message: "Birthdays added by you", birthdaysAdded });
+      .json({ message: "Birthdays added by you", processedBirthdays });
   } catch (error) {
     return res.status(500).json({
       message: "Error at Getting all Birthday Stored by the user: ",
-      error,
+      error: error.message,
     });
   }
 };
@@ -108,32 +151,42 @@ export const updateSpecificBirthdayController = async (req, res) => {
       customMessage,
     } = req.body;
 
+    const updateFields = {
+      name,
+      birthdayDate,
+      relationship,
+      notes,
+      remainderType,
+      remainderTime,
+      remainderTimeOfDay,
+      birthdayRemainderOnTheDay,
+      repeatYearly,
+      customMessage,
+    };
+    
+    if (req.file) {
+      updateFields.profileImage = {
+        data: req.file.buffer,
+        contentType: req.file.mimetype,
+      };
+    }
+
     const existing = await BirthdayRemainderSchema.findOne({
       _id: id,
       userId,
     });
+
     if (!existing) {
       return res.status(404).send("Data not found or unauthorized");
     }
 
     const updated = await BirthdayRemainderSchema.findByIdAndUpdate(
       id,
-      {
-        name,
-        birthdayDate,
-        relationship,
-        notes,
-        remainderType,
-        remainderTime,
-        remainderTimeOfDay,
-        birthdayRemainderOnTheDay,
-        repeatYearly,
-        customMessage,
-      },
+      updateFields,
       { new: true }
     );
     if (!updated) {
-      return res.status(404).send("Data not found updateBirthdayController");
+      return res.status(404).json({message: "Data not found updateBirthdayController"});
     }
     return res.status(200).json({ message: "Birthday Updated: ", updated });
   } catch (error) {
@@ -164,7 +217,7 @@ export const deleteBirthdayController = async (req, res) => {
   } catch (error) {
     return res.status(500).json({
       message: "Error at Deleting Birthday Stored by the user: ",
-      error,
+      error: error.message,
     });
   }
 };
@@ -172,7 +225,7 @@ export const deleteBirthdayController = async (req, res) => {
 export const getUpcomingBirthdays = async (req, res) => {
   try {
     const userId = getUserId(req);
-    const user = await User.find({ userId });
+    const user = await User.find({ _id: userId });
     const timezone = user.timeZone || "Asia/Kolkata";
     const today = moment().tz(timezone).startOf("day");
     const oneMonthLater = moment(today).add(1, "months");
@@ -207,7 +260,19 @@ export const getUpcomingBirthdays = async (req, res) => {
       return adjusted.isAfter(today) && adjusted.isBefore(oneMonthLater);
     });
 
-    filtered.sort((a, b) => {
+    const processedBirthdays = filtered.map((b) => {
+      if (b.profileImage?.data) {
+        return {
+          ...b,
+          profileImage: `data:${
+            b.profileImage.contentType
+          };base64,${b.profileImage.data.toString("base64")}`,
+        };
+      }
+      return b;
+    });
+
+    processedBirthdays.sort((a, b) => {
       const aDate = moment(a.birthdayDate);
       const bDate = moment(b.birthdayDate);
       return moment({ month: aDate.month(), day: aDate.date() }).diff(
@@ -215,7 +280,9 @@ export const getUpcomingBirthdays = async (req, res) => {
       );
     });
 
-    return res.status(201).json({ message: "Upcoming Birthdays", filtered });
+    return res
+      .status(201)
+      .json({ message: "Upcoming Birthdays", processedBirthdays });
   } catch (error) {
     return res.status(500).json({
       message: "Error at Get Upcoming Birthdays Stored by the user: ",
@@ -232,7 +299,20 @@ export const todayBirthdaysController = async (req, res) => {
     const today = moment().tz(timezone).startOf("day");
 
     const birthdays = await BirthdayRemainderSchema.find({ userId });
-    const todayBirthdays = birthdays.filter((b) => {
+
+    const processedBirthdays = birthdays.map((b) => {
+      if (b.profileImage?.data) {
+        return {
+          ...b._doc,
+          profileImage: `data:${
+            b.profileImage.contentType
+          };base64,${b.profileImage.data.toString("base64")}`,
+        };
+      }
+      return b._doc;
+    });
+
+    const todayBirthdays = processedBirthdays.filter((b) => {
       const bDate = moment(b.birthdayDate);
       // const bDate = moment({ year: today.year(), month: b.month(), date: b.date() });
       return bDate.month() === today.month() && bDate.date() === today.date();
@@ -280,7 +360,7 @@ export const checkAndSendBirthdayRemainders = async () => {
           (daysLeft === 1 && b.remainderTime.includes("1 Day Before")) ||
           daysLeft === 0
         ) {
-          if(b.remainderType.includes("Email")) {
+          if (b.remainderType.includes("Email")) {
             if (
               bDate.date() === today.date() &&
               bDate.month() === today.month()

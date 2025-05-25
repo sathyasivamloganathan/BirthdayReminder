@@ -1,19 +1,39 @@
 import { Router } from "express";
-import { addBirthdayController, checkAndSendBirthdayRemainders, deleteBirthdayController, getAllBirthday, getSpecificBirthdayToUpdate, getUpcomingBirthdays, todayBirthdaysController, updateSpecificBirthdayController } from "../controller/birthdayController.js";
+import {
+  addBirthdayController,
+  checkAndSendBirthdayRemainders,
+  deleteBirthdayController,
+  getAllBirthday,
+  getSpecificBirthdayToUpdate,
+  getUpcomingBirthdays,
+  todayBirthdaysController,
+  updateSpecificBirthdayController,
+} from "../controller/birthdayController.js";
 import { upload } from "../utils/multer.js";
 
 const route = Router();
 
-route.post("/addBirthday", upload.single("profileImage"), addBirthdayController);
+route.post(
+  "/addBirthday",
+  upload.single("profileImage"),
+  addBirthdayController
+);
+
 route.get("/getBirthdaysAdded", getAllBirthday);
+
 route.get("/getSpecificBirthdayToUpdate/:id", getSpecificBirthdayToUpdate);
-route.put("/updateSpecificBirthday/:id", updateSpecificBirthdayController);
+
+route.put(
+  "/updateSpecificBirthday/:id",
+  upload.single("profileImage"),
+  updateSpecificBirthdayController
+);
+
 route.delete("/deleteBirthdayAdded/:id", deleteBirthdayController);
 
 route.get("/getUpcomingBirthdays", getUpcomingBirthdays);
+
 route.get("/todayBirthdays", todayBirthdaysController);
-
-
 
 route.get("/test-remainder", async (req, res) => {
   try {
