@@ -24,7 +24,9 @@ connectDatabase(); //Database Connection
 app.use('/api/auth', authRoute)
 app.use('/api', authenticateUser, birthdayRoute)
 
-
+app.get("/", (req, res) => {
+    res.send("API is running")
+})
 cron.schedule("0 19 * * *", () => {
     console.log("Checking Birthdays....")
     checkAndSendBirthdayRemainders();
