@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { timeZones } from "../../components/timezones";
+import { timeZones } from "../../components/Timezones";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useAuth } from "../../context/auth";
@@ -172,10 +172,14 @@ const Profile = () => {
   return (
     <div
       className={`min-h-screen text-gray-800 dark:text-white relative overflow-hidden pb-28 ${
-        showModal && "bg-gray-500 bg-opacity-100"
+        showModal && "bg-black/60 backdrop-blur-md z-30 bg-opacity-100"
       }`}
     >
-      <div className="absolute top-0 left-0 w-full h-[230px] overflow-hidden z-0">
+      <div
+        className={`absolute top-0 left-0 w-full h-[230px] overflow-hidden z-0 ${
+          showModal ? "blur-sm opacity-30" : ""
+        }`}
+      >
         <div className="w-[300%] h-full">
           <ProfileDesignCard />
         </div>
@@ -183,7 +187,11 @@ const Profile = () => {
 
       <div className="relative z-10 max-w-xl mx-auto mt-[40px] px-4">
         <div className="relative w-40 h-40 mx-auto mb-4">
-          <div className="absolute inset-0 rounded-full border-4 border-white dark:border-gray-700 bg-white shadow-xl overflow-hidden z-10">
+          <div
+            className={`absolute inset-0 rounded-full border-4 border-white dark:border-gray-700 bg-white shadow-xl overflow-hidden z-10 ${
+              showModal ? "blur-sm" : ""
+            }`}
+          >
             {profile.profilePic ? (
               <img
                 src={profile.profilePic}
@@ -244,17 +252,17 @@ const Profile = () => {
               </h2>
 
               {/* <div className="justify-end items-end"> */}
-                <button
-                  onClick={toggleTheme}
-                  className="relative w-14 h-14 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 transition-colors duration-300 hover:scale-105"
-                >
-                  <span className="transition-transform duration-300 transform scale-100 dark:scale-0">
-                    <Sun className="text-yellow-500" />
-                  </span>
-                  <span className="absolute transition-transform duration-300 transform scale-0 dark:scale-100">
-                    <Moon className="text-gray-300" />
-                  </span>
-                </button>
+              <button
+                onClick={toggleTheme}
+                className="relative w-14 h-14 flex items-center justify-center rounded-full bg-white dark:bg-gray-800 shadow-lg border border-gray-200 dark:border-gray-600 transition-colors duration-300 hover:scale-105"
+              >
+                <span className="transition-transform duration-300 transform scale-100 dark:scale-0">
+                  <Sun className="text-yellow-500" />
+                </span>
+                <span className="absolute transition-transform duration-300 transform scale-0 dark:scale-100">
+                  <Moon className="text-gray-300" />
+                </span>
+              </button>
               {/* </div> */}
             </div>
 
@@ -307,7 +315,7 @@ const Profile = () => {
                     <h3 className="text-xl font-semibold text-[#1E2A78] dark:text-[#7FDBFF]">
                       {label}
                     </h3>
-                    <section className="w-60">
+                    <section className="w-44">
                       {loadingPage ? (
                         <SkeletonLoader
                           lightTheme={"gray-300"}
@@ -344,34 +352,40 @@ const Profile = () => {
         )}
 
         {isEditing && (
-          <form
-            onSubmit={updateProfileDetails}
-            className="space-y-5 mt-10 bg-opacity-60 dark:bg-opacity-60 p-6 rounded-md shadow-xl backdrop-blur"
-          >
-            <div className="flex justify-center">
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleImageChange}
-                className="text-sm text-gray-700 dark:text-gray-300"
-              />
-            </div>
+          <div>
+            <form
+              onSubmit={updateProfileDetails}
+              className="space-y-5 mt-10 bg-opacity-60 dark:bg-opacity-60 p-6 rounded-md shadow-xl backdrop-blur"
+            >
+              <div className="flex justify-center">
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="text-sm text-gray-700 dark:text-gray-300"
+                />
+              </div>
 
-            {loadingPage ? (
-              <SkeletonLoader lightTheme={"gray-300"} darkTheme={"gray-500"} />
-            ) : (
-              <input
-                type="text"
-                name="name"
-                placeholder="Name"
-                value={profile.name || ""}
-                onChange={(e) =>
-                  setProfile({ ...profile, [e.target.name]: e.target.value })
-                }
-                className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            )}
-            {/* <input
+              {loadingPage ? (
+                <SkeletonLoader
+                  lightTheme={"gray-300"}
+                  darkTheme={"gray-500"}
+                />
+              ) : (
+                <input
+                  type="text"
+                  name="name"
+                  placeholder="Name"
+                  value={profile.name || ""}
+                  onChange={(e) =>
+                    setProfile({ ...profile, [e.target.name]: e.target.value })
+                  }
+                  className={`${
+                    showModal ? "blur-[2px] opacity-50" : ""
+                  } w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                />
+              )}
+              {/* <input
             type="text"
             name="name"
             placeholder="Name"
@@ -382,170 +396,194 @@ const Profile = () => {
             className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
           /> */}
 
-            {loadingPage ? (
-              <SkeletonLoader lightTheme={"gray-300"} darkTheme={"gray-500"} />
-            ) : (
-              <input
-                type="date"
-                name="dob"
-                value={profile.dob}
-                onChange={(e) =>
-                  setProfile({ ...profile, [e.target.name]: e.target.value })
-                }
-                className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400"
-              />
-            )}
-
-            {loadingPage ? (
-              <SkeletonLoader lightTheme={"gray-300"} darkTheme={"gray-500"} />
-            ) : (
-              <input
-                type="email"
-                name="email"
-                value={profile.email}
-                disabled
-                className="w-full px-4 py-3 rounded-md bg-gray-200 dark:bg-gray-600 cursor-not-allowed text-gray-400"
-              />
-            )}
-
-            {loadingPage ? (
-              <div className="flex gap-2">
+              {loadingPage ? (
                 <SkeletonLoader
                   lightTheme={"gray-300"}
                   darkTheme={"gray-500"}
                 />
-                <button
-                  type="button"
-                  className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
-                >
-                  Verify
-                </button>
-              </div>
-            ) : (
-              <div className="flex gap-2">
+              ) : (
                 <input
-                  type="text"
-                  name="mobile"
-                  placeholder="Mobile"
-                  value={profile.mobile}
+                  type="date"
+                  name="dob"
+                  value={profile.dob}
                   onChange={(e) =>
                     setProfile({ ...profile, [e.target.name]: e.target.value })
                   }
-                  className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
+                  className={`${
+                    showModal ? "blur-[2px] opacity-50" : ""
+                  } w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400`}
                 />
+              )}
 
+              {loadingPage ? (
+                <SkeletonLoader
+                  lightTheme={"gray-300"}
+                  darkTheme={"gray-500"}
+                />
+              ) : (
+                <input
+                  type="email"
+                  name="email"
+                  value={profile.email}
+                  disabled
+                  className={`${
+                    showModal ? "blur-[2px] opacity-50" : ""
+                  } w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                />
+              )}
+
+              {loadingPage ? (
+                <div className="flex gap-2">
+                  <SkeletonLoader
+                    lightTheme={"gray-300"}
+                    darkTheme={"gray-500"}
+                  />
+                  <button
+                    type="button"
+                    className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Verify
+                  </button>
+                </div>
+              ) : (
+                <div className="flex gap-2">
+                  <input
+                    type="text"
+                    name="mobile"
+                    placeholder="Mobile"
+                    value={profile.mobile}
+                    onChange={(e) =>
+                      setProfile({
+                        ...profile,
+                        [e.target.name]: e.target.value,
+                      })
+                    }
+                    className={`${
+                      showModal ? "blur-[2px] opacity-50" : ""
+                    } w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                  />
+
+                  <button
+                    type="button"
+                    className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+                  >
+                    Verify
+                  </button>
+                </div>
+              )}
+              {loadingPage ? (
+                <SkeletonLoader
+                  lightTheme={"gray-300"}
+                  darkTheme={"gray-500"}
+                />
+              ) : (
                 <button
                   type="button"
-                  className="px-4 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white"
+                  onClick={() => setShowModal(true)}
+                  className="flex items-center justify-between w-full px-4 py-3 rounded-md border border-gray-300 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600"
                 >
-                  Verify
+                  <span>
+                    {newPassword
+                      ? "Password updated, Click on Save Changes"
+                      : "Change Password"}
+                  </span>
+                  <LockKeyholeOpen />
                 </button>
-              </div>
-            )}
-            {loadingPage ? (
-              <SkeletonLoader lightTheme={"gray-300"} darkTheme={"gray-500"} />
-            ) : (
-              <button
-                type="button"
-                onClick={() => setShowModal(true)}
-                className="flex items-center justify-between w-full px-4 py-3 rounded-md border border-gray-300 bg-white hover:bg-gray-100 dark:bg-gray-700 dark:text-white dark:border-gray-600"
-              >
-                <span>
-                  {newPassword
-                    ? "Password updated, Click on Save Changes"
-                    : "Change Password"}
-                </span>
-                <LockKeyholeOpen />
-              </button>
-            )}
+              )}
 
-            {showModal && (
-              <div className="fixed inset-0 z-50 flex items-center justify-center dark:hover:text-black">
-                <div className="bg-white dark:bg-gray-800 p-6 rounded-xl w-full max-w-md shadow-lg">
-                  <h2 className="text-xl font-semibold mb-4 text-white">
-                    Change Password
-                  </h2>
+              {showModal && (
+                <div className="fixed inset-0 z-50 flex items-center justify-center dark:hover:text-black">
+                  <div className="bg-white dark:bg-gray-800 p-6 rounded-xl w-full max-w-md shadow-lg">
+                    <h2 className="text-xl font-bold mb-4 text-gray-800 dark:text-white">
+                      Change Password
+                    </h2>
 
-                  <input
-                    type="password"
-                    placeholder="New Password"
-                    value={newPassword}
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className="w-full mb-3 px-4 py-2 border rounded-lg outline-none border-none"
-                  />
-                  <input
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={confirmNewPassword}
-                    onChange={(e) => setConfirmNewPassword(e.target.value)}
-                    className="w-full mb-4 px-4 py-2 border rounded-lg outline-none border-none"
-                  />
+                    <input
+                      type="password"
+                      placeholder="New Password"
+                      value={newPassword}
+                      onChange={(e) => setNewPassword(e.target.value)}
+                      className="w-full mb-3 px-4 py-2 border border-gray-600 rounded-md outline-none"
+                    />
+                    <input
+                      type="password"
+                      placeholder="Confirm Password"
+                      value={confirmNewPassword}
+                      onChange={(e) => setConfirmNewPassword(e.target.value)}
+                      className="w-full mb-4 px-4 py-2 border border-gray-600 rounded-md outline-none"
+                    />
 
-                  <div className="flex justify-end space-x-3">
-                    <button
-                      type="button"
-                      onClick={() => setShowModal(false)}
-                      className="px-4 py-2 rounded-md border border-gray-400 text-white hover:bg-gray-200 dark:hover:text-black"
-                    >
-                      Cancel
-                    </button>
-                    <button
-                      // type="button"
-                      onClick={handlePasswordChange}
-                      className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
-                    >
-                      Submit
-                    </button>
+                    <div className="flex justify-end space-x-3">
+                      <button
+                        type="button"
+                        onClick={() => setShowModal(false)}
+                        className="px-4 py-2 rounded-md border border-gray-400 text-black dark:text-white hover:bg-gray-200 dark:hover:text-black"
+                      >
+                        Cancel
+                      </button>
+                      <button
+                        // type="button"
+                        onClick={handlePasswordChange}
+                        className="px-4 py-2 rounded-md bg-blue-600 text-white hover:bg-blue-700"
+                      >
+                        Submit
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            )}
+              )}
 
-            {loadingPage ? (
-              <SkeletonLoader lightTheme={"gray-300"} darkTheme={"gray-500"} />
-            ) : (
-              <select
-                value={profile.timeZone}
-                name="timeZone"
-                onChange={(e) =>
-                  setProfile({ ...profile, [e.target.name]: e.target.value })
-                }
-                className="w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700"
-              >
-                <option value="">
-                  {profile.timeZone ? profile.timeZone : "Select timezone"}
-                </option>
-                {timeZones.map((zone, i) => (
-                  <option key={i} value={zone}>
-                    {zone}
+              {loadingPage ? (
+                <SkeletonLoader
+                  lightTheme={"gray-300"}
+                  darkTheme={"gray-500"}
+                />
+              ) : (
+                <select
+                  value={profile.timeZone}
+                  name="timeZone"
+                  onChange={(e) =>
+                    setProfile({ ...profile, [e.target.name]: e.target.value })
+                  }
+                  className={`${
+                    showModal ? "blur-[2px] opacity-50" : ""
+                  } w-full px-4 py-3 rounded-md border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-400`}
+                >
+                  <option value="">
+                    {profile.timeZone ? profile.timeZone : "Select timezone"}
                   </option>
-                ))}
-              </select>
-            )}
+                  {timeZones.map((zone, i) => (
+                    <option key={i} value={zone}>
+                      {zone}
+                    </option>
+                  ))}
+                </select>
+              )}
 
-            {loadingPage ? (
-              <SkeletonLoader
-                lightTheme={"green-600"}
-                darkTheme={"green-800"}
-              />
-            ) : (
-              <div className="">
-                <button
-                  onClick={(prev) => setIsEditing(!prev)}
-                  className="w-[47%] mr-[6%] bg-primaryLight hover:bg-secondaryLight dark:bg-primaryDark dark:hover:bg-secondaryDark transition-colors duration-300 text-white py-3 rounded-md"
-                >
-                  Cancel
-                </button>
+              {loadingPage ? (
+                <SkeletonLoader
+                  lightTheme={"green-600"}
+                  darkTheme={"green-800"}
+                />
+              ) : (
+                <div className="">
+                  <button
+                    onClick={(prev) => setIsEditing(!prev)}
+                    className={`${showModal ? 'blur-[2px]' : ''} w-[47%] mr-[6%] bg-primaryLight hover:bg-secondaryLight dark:bg-primaryDark dark:hover:bg-secondaryDark transition-colors duration-300 text-white py-3 rounded-md`}
+                  >
+                    Cancel
+                  </button>
 
-                <button
-                  type="submit"
-                  className="w-[47%] bg-green-600 hover:bg-primaryLight dark:hover:bg-primaryDark transition-colors duration-300 text-white py-3 rounded-md"
-                >
-                  Save Changes
-                </button>
-              </div>
-            )}
-          </form>
+                  <button
+                    type="submit"
+                    className={`${showModal ? 'blur-[2px]' : ''} w-[47%] bg-green-600 hover:bg-primaryLight dark:hover:bg-primaryDark transition-colors duration-300 text-white py-3 rounded-md`}
+                  >
+                    Save Changes
+                  </button>
+                </div>
+              )}
+            </form>
+          </div>
         )}
       </div>
     </div>

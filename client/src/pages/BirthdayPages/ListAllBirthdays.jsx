@@ -1,31 +1,27 @@
 import { useEffect, useState } from "react";
 import { useAuth } from "../../context/auth";
 import { toast } from "react-toastify";
-import axios from "axios";
-import { Cake } from "lucide-react";
-import DefaultUser from "../../assets/defaultUser.png";
+import axios, { toFormData } from "axios";
 import CakeAnimation from "../../assets/CakeAnimation.webm";
-import Ribbon from "../../assets/ribbon.png";
-import { lightColors, darkColors } from "../../utils/colorThemes";
-
+import BirthdayCard from "../../components/BirthdayCards/BirthdayCard";
+import {
+  getAge,
+  getNextUpcomingBirthdays,
+  groupBirthdaysByMonth,
+} from "../../utils/BirthdayUtils";
+import { darkColors, lightColors } from "../../utils/colorThemes";
+import SeeAllBirthdays from "./SeeAllBirthdays";
+import { useNavigate } from "react-router-dom";
 
 const ListAllBirthdays = () => {
   const { auth } = useAuth();
-  const [todayBirthdays, setTodayBirthdays] = useState([
-    { _id: 1, name: "Raghul", relationShip: "Friend" },
-    { _id: 2, name: "Ramkumar", relationShip: "Friend" },
-    { _id: 3, name: "Shree", relationShip: "Sister" },
-    { _id: 4, name: "Ramkumar", relationShip: "Friend" },
-    { _id: 5, name: "Ramkumar", relationShip: "Friend" },
-    { _id: 6, name: "Ramkumar", relationShip: "Friend" },
-  ]);
+  const [todayBirthdays, setTodayBirthdays] = useState([]);
+  const [upcomingBirthdays, setUpcomingBirthdays] = useState([]);
+  const [futureBirthdays, setFutureBirthdays] = useState([]);
+  const [nextUpcomoingBirthdays, setNextUpcomingBirthdays] = useState([]);
+  const [groupedByMonth, setGroupedByMonth] = useState({});
 
-  const [upcomingBirthdays, setUpcomingBirthdays] = useState([
-    { _id: 1, name: "Raghul", relationShip: "Friend" },
-    { _id: 2, name: "Ramkumar", relationShip: "Friend" },
-    { _id: 3, name: "Shree", relationShip: "Sister" },
-  ]);
-
+  const navigate = useNavigate();
   const getTodayBirthdays = async () => {
     try {
       const res = await axios.get("http://localhost:7000/api/todayBirthdays", {
@@ -38,17 +34,78 @@ const ListAllBirthdays = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error("Error in getting today's birthdays");
+      toast.error(
+        "Error in getting today's birthdays. Check your internet connection."
+      );
     }
   };
 
-  // useEffect(() => {
-  //   getTodayBirthdays();
-  // }, []);
+  const getUpcomingBirthdays = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:7000/api/getUpcomingBirthdays",
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      );
+      if (res) {
+        setUpcomingBirthdays(res?.data?.processedBirthdays || []);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        "Error at Upcoming Birthdays. Check your internet connection."
+      );
+    }
+  };
 
-  
+  const getAllBirthdays = async () => {
+    try {
+      const res = await axios.get(
+        "http://localhost:7000/api/getBirthdaysAdded",
+        {
+          headers: {
+            Authorization: `Bearer ${auth.token}`,
+          },
+        }
+      );
+      if (res) {
+        setFutureBirthdays(res?.data?.processedBirthdays || []);
+        setGroupedByMonth(
+          groupBirthdaysByMonth(res?.data?.processedBirthdays || [])
+        );
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error(
+        "Error at Upcoming Birthdays. Check your internet connection."
+      );
+    }
+  };
+
+  useEffect(() => {
+    getTodayBirthdays();
+    getUpcomingBirthdays();
+    getAllBirthdays();
+  }, []);
+
+  useEffect(() => {
+    setNextUpcomingBirthdays(
+      groupBirthdaysByMonth(getNextUpcomingBirthdays(futureBirthdays))
+    );
+  }, [futureBirthdays]);
+
+  const handleNavigate = () => {
+    if(futureBirthdays.length === 0) {
+      return toast.info("No Birthdays Added")
+    }
+    navigate("/allbirthdays", { state: {groupedByMonth} });
+  }
+
   return (
-    <div className="min-h-screen p-6 pb-28">
+    <div className="min-h-screen p-6 pb-32">
       {/* Greeting */}
       <div className="max-w-3xl mx-auto">
         <h1 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6 drop-shadow-md">
@@ -57,7 +114,7 @@ const ListAllBirthdays = () => {
 
         {/* Birthday Section */}
         <div className="bg-gradient-to-br from-[#f1f8e9] via-[#e8f5e9] to-[#e0f7fa] dark:from-[#2c5364] dark:via-[#203a43] dark:to-[#0f2027] shadow-2xl rounded-2xl p-6 transition-colors duration-300">
-          <h2 className="text-2xl font-bold mb-4 text-gray-900 dark:text-white tracking-wide drop-shadow-md">
+          <h2 className="text-xl font-bold mb-4 text-gray-900 dark:text-white tracking-wide drop-shadow-md">
             Today Birthdays
           </h2>
 
@@ -93,142 +150,116 @@ const ListAllBirthdays = () => {
       </div>
 
       {todayBirthdays.length > 0 && (
-        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[250px] overflow-y-auto pr-2 custom-scrollbar">
+        <div className="mt-10 grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-[300px] overflow-y-auto pr-2 custom-scrollbar">
           {todayBirthdays.map((b, index) => {
-            const color = lightColors[index % lightColors.length];
-              const darkColor = darkColors[index % darkColors.length];
-              return (
-                <div
-                  key={index}
-                  className={`relative flex flex-row gap-4 h-[150px] rounded-xl bg-white/80 dark:bg-[#1e293b]/80 border-l-4 ${color.border} dark:${darkColor.border} shadow-lg dark:shadow-md backdrop-blur-md p-4`}
-                >
-                  <img
-                    src={Ribbon}
-                    alt="ribbon"
-                    className="absolute top-[-10px] right-[-15px] w-16 rotate-[45deg] drop-shadow-lg"
-                  />
-                  <div className="w-full">
-                    <div className="flex flex-row gap-4">
-                      <img
-                        src={DefaultUser}
-                        alt="User"
-                        className={`w-16 h-16 rounded-full border-2 ${color.border} dark:${darkColor.border} shadow-lg`}
-                      />
-                      <div className="flex flex-row justify-between w-full items-center">
-                        <div>
-                          <p className="font-semibold text-gray-900 dark:text-white text-lg truncate w-44 drop-shadow-sm">
-                            {b.name}
-                          </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold">
-                            {b.relationShip}
-                          </p>
-                        </div>
-                        <div
-                          className={`px-3 py-1 text-xs rounded-full bg-gradient-to-r ${color.from} ${color.to} dark:${darkColor.from} dark:${darkColor.to} text-white shadow-md font-semibold sparkle`}
-                        >
-                          0 days
-                        </div>
-                      </div>
-                    </div>
-                    <div className="flex flex-row justify-between mt-4 px-1">
-                      <div>
-                        <p className="text-xs ml-1 text-gray-600 dark:text-gray-400 font-semibold">
-                          Birthday
-                        </p>
-                        <p className="text-sm text-gray-900 dark:text-white font-bold drop-shadow-sm">
-                          May 18, 2025
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold">
-                          Turning
-                        </p>
-                        <p className="text-sm text-gray-900 dark:text-white font-bold drop-shadow-sm">
-                          30 years
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              );})}
+            return (
+              <BirthdayCard
+                key={b._id}
+                birthday={b}
+                index={index}
+                isToday={true}
+              />
+            );
+          })}
         </div>
       )}
 
       {/* Upcoming Birthdays */}
-      <h2 className="text-2xl font-bold text-gray-900 dark:text-white mt-12 mb-6 drop-shadow-md">
-        Upcoming Birthdays
+      <h2 className="text-xl font-bold text-gray-900 dark:text-white mt-12 mb-6 drop-shadow-md">
+        Upcoming Birthdays in 30 Days :
       </h2>
 
       {upcomingBirthdays.length > 0 ? (
         <section>
           <div className="mt-6 grid grid-cols-1 sm:grid-cols-2 gap-4 pr-2">
             {upcomingBirthdays.map((b, index) => {
-
-              const color = lightColors[index % lightColors.length];
-              const darkColor = darkColors[index % darkColors.length];
-
               return (
-                <div
-                  key={index}
-                  className={`flex flex-row gap-4 h-[150px] rounded-xl bg-white/80 dark:bg-[#1e293b]/80 shadow-xl dark:shadow-md backdrop-blur-md p-4 border-l-[6px] ${color.border} dark:${darkColor.border} relative`}
-                >
-                  <div className="w-full">
-                    <div className="flex flex-row gap-4">
-                      <img
-                        src={DefaultUser}
-                        alt="User"
-                        className={`w-16 h-16 rounded-full border-2 ${color.border} dark:${darkColor.border} shadow-lg`}
-                      />
-                      <div className="flex flex-row justify-between w-full items-center">
-                        <div>
-                          <p className="font-semibold text-gray-900 dark:text-white text-lg truncate w-44 drop-shadow-sm">
-                            {b.name}
-                          </p>
-                          <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold">
-                            {b.relationShip}
-                          </p>
-                        </div>
-                        <div
-                          className={`px-3 py-1 text-xs rounded-full bg-gradient-to-r ${color.from} ${color.to} dark:${darkColor.from} dark:${darkColor.to} text-white shadow-md font-semibold sparkle`}
-                        >
-                          5 days
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-row justify-between mt-4 px-1">
-                      <div>
-                        <p className="text-xs ml-1 text-gray-600 dark:text-gray-400 font-semibold">
-                          Birthday
-                        </p>
-                        <p className="text-sm text-gray-900 dark:text-white font-bold drop-shadow-sm">
-                          May 30, 2025
-                        </p>
-                      </div>
-                      <div className="text-right">
-                        <p className="text-xs text-gray-600 dark:text-gray-400 font-semibold">
-                          Turning
-                        </p>
-                        <p className="text-sm text-gray-900 dark:text-white font-bold drop-shadow-sm">
-                          22 years
-                        </p>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+                <BirthdayCard
+                  key={b._id}
+                  birthday={b}
+                  index={index}
+                  isToday={false}
+                />
               );
             })}
           </div>
         </section>
       ) : (
         <div className="mt-6 px-4 py-6 text-center text-gray-600 dark:text-gray-300 bg-white/60 dark:bg-[#1e293b]/50 rounded-xl shadow-inner">
-          <p className="text-lg font-semibold">
+          <p className="text-lg font-semibold text-gray-600 dark:text-gray-400">
             Looks like everyone has had their cake! No upcoming birthdays for
             now.
           </p>
-          <p className="text-sm mt-2">Keep checking — surprises may come!</p>
+          <p className="text-sm mt-2 text-gray-600 dark:text-gray-400">
+            Keep checking — surprises may come!
+          </p>
         </div>
       )}
+
+      <section className="w-full flex flex-row justify-between">
+        <h2 className="text-xl font-bold text-gray-900 dark:text-white mt-12 mb-6 drop-shadow-md">
+          Future Birthdays
+        </h2>
+        <button onClick={handleNavigate} className="text-center mt-12 mb-6 text-primaryLight dark:text-primaryDark font-semibold text-[18px] drop-shadow-md">
+          See All
+        </button>
+      </section>
+      <section className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        {Array.from({ length: 12 }).map((_, index) => {
+          const monthName = new Date(0, index).toLocaleString("default", {
+            month: "long",
+          });
+          const monthBirthdays = nextUpcomoingBirthdays[index] || [];
+
+          if(monthBirthdays.length === 0) {
+            return null;
+          }
+
+          return (
+            <div
+              key={index}
+              className="mt-2 bg-transparent text-gray-800 dark:text-gray-200 py-4 px-4 rounded-xl shadow-xl border border-gray-300 dark:border-gray-700 backdrop-blur-md"
+            >
+              <h2 className="text-xl font-bold drop-shadow-md tracking-wide text-gray-900 dark:text-gray-100 mb-6 ml-2">
+                {monthName}
+              </h2>
+
+              {monthBirthdays.map((person, personIndex) => {
+
+                const date = new Date(person.birthdayDate).getDate();
+                {/* const color = lightColors[personIndex % lightColors.length];
+                const darkColor = darkColors[personIndex % darkColors.length]; */}
+                const randomIndex = Math.floor(
+                  Math.random() * lightColors.length
+                );
+                const color = lightColors[randomIndex];
+                const darkColor = darkColors[randomIndex];
+
+                return (
+                  <div key={personIndex}className="flex flex-row items-center justify-between ml-2 mr-2 mb-4 pb-2 border-b-2 border-gray-300 dark:border-gray-600">
+                    <div
+                      className={`w-12 h-12 rounded-full bg-gradient-to-r ${color.from} ${color.to} dark:${darkColor.from} dark:${darkColor.to} flex items-center justify-center text-white font-bold text-md shadow-md`}
+                    >
+                      {date}
+                    </div>
+                    <div className="flex flex-col ml-4 flex-grow">
+                      <p className="text-lg font-semibold text-gray-900 dark:text-gray-100">
+                        {person.name}
+                      </p>
+                      <p className="text-sm text-gray-600 dark:text-gray-400 italic">
+                        {person.relationship}
+                      </p>
+                    </div>
+                    <div className="text-base font-semibold text-emerald-700 dark:text-emerald-400">
+                      {getAge(person.birthdayDate)} Years
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })}
+      </section>
     </div>
   );
 };

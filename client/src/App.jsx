@@ -1,6 +1,6 @@
 import './App.css'
 import './index.css';
-import {Route, Routes} from "react-router-dom";
+import {Navigate, Route, Routes} from "react-router-dom";
 import Register from './pages/Register/Register';
 import Login from "./pages/Login/Login";
 import Home from './pages/Home';
@@ -16,6 +16,8 @@ import { useAuth } from './context/auth';
 import { Moon, Sun } from 'lucide-react';
 import AddBirthday from './pages/BirthdayPages/AddBirthday';
 import ListAllBirthdays from './pages/BirthdayPages/ListAllBirthdays';
+import SeeAllBirthdays from './pages/BirthdayPages/SeeAllBirthdays';
+import EditBirthdaysAdded from './pages/BirthdayPages/EditBirthdaysAdded';
 function App() {
 
    const { theme, toggleTheme } = useContext(ThemeContext);
@@ -40,7 +42,7 @@ function App() {
       <ToastContainer />
       {auth?.token ? <Navbar /> : ""}
       <Routes>
-        <Route path="/" element={<Home />} />
+        <Route path="/" element={<Navigate to="/auth/register" replace />} />
         <Route path="/auth/register" element={<Register />} />
         <Route path="/auth/login" element={<Login />} />
         <Route path="/auth/verifyEmail" element={<VerifyEmail />} />
@@ -49,6 +51,8 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/addbirthday" element={<AddBirthday />} />
           <Route path="/home" element={<ListAllBirthdays />} />
+          <Route path="/editbirthdays" element={<EditBirthdaysAdded />} />
+          <Route path="/allbirthdays" element={<SeeAllBirthdays />} />
         </Route>
         <Route path="/*" element={<Unauthorized />} />
       </Routes>

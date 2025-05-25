@@ -20,7 +20,7 @@ const Unauthorized = () => {
     >
       <UnauthorizedError className="w-32 h-32 mb-6 text-blue-600 dark:text-blue-300" />
 
-      <h1 className="text-4xl font-bold mb-2">Unauthorized Access</h1>
+      <h1 className="text-4xl font-bold mb-2 text-center">Unauthorized Access</h1>
 
       <p className="text-lg text-center max-w-xl">
         You are not authorized to view this page. Please click {auth?.token ? "Home" : "login"} to continue.

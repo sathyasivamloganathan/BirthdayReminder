@@ -23,6 +23,30 @@ export const lightColors = [
     from: "from-purple-500",
     to: "to-purple-300",
   },
+  {
+    bg: "bg-pink-100",
+    border: "border-pink-500",
+    from: "from-pink-500",
+    to: "to-pink-300",
+  },
+  {
+    bg: "bg-yellow-100",
+    border: "border-yellow-500",
+    from: "from-yellow-500",
+    to: "to-yellow-300",
+  },
+  {
+    bg: "bg-teal-100",
+    border: "border-teal-500",
+    from: "from-teal-500",
+    to: "to-teal-300",
+  },
+  {
+    bg: "bg-indigo-100",
+    border: "border-indigo-500",
+    from: "from-indigo-500",
+    to: "to-indigo-300",
+  },
 ];
 
 export const darkColors = [
@@ -49,5 +73,29 @@ export const darkColors = [
     border: "border-purple-400",
     from: "from-purple-400",
     to: "to-purple-600",
+  },
+  {
+    bg: "bg-pink-900",
+    border: "border-pink-400",
+    from: "from-pink-400",
+    to: "to-pink-600",
+  },
+  {
+    bg: "bg-yellow-900",
+    border: "border-yellow-400",
+    from: "from-yellow-400",
+    to: "to-yellow-600",
+  },
+  {
+    bg: "bg-teal-900",
+    border: "border-teal-400",
+    from: "from-teal-400",
+    to: "to-teal-600",
+  },
+  {
+    bg: "bg-indigo-900",
+    border: "border-indigo-400",
+    from: "from-indigo-400",
+    to: "to-indigo-600",
   },
 ];

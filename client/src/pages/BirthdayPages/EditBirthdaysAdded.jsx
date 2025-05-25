@@ -1,9 +1,9 @@
 import { useState } from "react";
-import whiteBlue from "../../assets/whiteBlue.webp";
+import EditImage from "../../assets/EditPageImage1.jpg";
 import { toast } from "react-toastify";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
-
+import { useLocation, useNavigate } from "react-router-dom";
+import { useAuth } from "../../context/auth";
 
 const remainderTypes = ["Email", "SMS", "Push Notification"];
 const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
@@ -44,21 +44,22 @@ const ToggleButtonGroup = ({ options, selected = [], onChange = () => {} }) => {
   );
 };
 
-const AddBirthdayPage = () => {
-  const [form, setForm] = useState({
-    name: "",
-    birthdayDate: "",
-    relationship: "",
-    notes: "",
-    remainderType: [],
-    remainderTime: [],
-    remainderTimeOfDay: "07:00",
-    repeatYearly: true,
-    customMessage: "",
-    profilePic: null,
-  });
+const EditBirthdaysAdded = () => {
+  const { state } = useLocation();
+  const { auth } = useAuth();
 
-  const [loadingPage, setLoadingPage] = useState(false)
+  const formatDate = (date) => {
+    if (!date) return "";
+    const d = new Date(date);
+    return d.toISOString().split("T")[0];
+  };
+
+  const selectedUser = state?.selectedUser || {};
+  selectedUser.birthdayDate = formatDate(selectedUser.birthdayDate);
+
+  const [form, setForm] = useState(selectedUser);
+
+  const [loadingPage, setLoadingPage] = useState(false);
   const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -74,7 +75,7 @@ const AddBirthdayPage = () => {
       // 200KB limit
       const reader = new FileReader();
       reader.onloadend = () => {
-        setForm((prev) => ({ ...prev, profilePic: reader.result }));
+        setForm((prev) => ({ ...prev, profileImage: reader.result }));
       };
       reader.readAsDataURL(file);
     } else {
@@ -82,7 +83,7 @@ const AddBirthdayPage = () => {
     }
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -100,29 +101,30 @@ const AddBirthdayPage = () => {
       formData.append("repeatYearly", form.repeatYearly);
       formData.append("customMessage", form.customMessage);
 
-      const blob = await fetch(form.profilePic).then((res) => res.blob());
+      const blob = await fetch(form.profileImage).then((res) => res.blob());
       formData.append("profileImage", blob, "profile.jpg");
-      console.log(form)
+      console.log(form);
       // Send request
       setLoadingPage(true);
-      const res = await axios.post(
-        "http://localhost:7000/api/addBirthday",
-        formData, {
+      const res = await axios.put(
+        `http://localhost:7000/api/updateSpecificBirthday/${selectedUser._id}`,
+        formData,
+        {
           headers: {
+            Authorization: `Bearer ${auth.token}`,
             "Content-Type": "multipart/form-data",
-          }
+          },
         }
       );
-      console.log(res);
       setLoadingPage(false);
-      toast.success("Birthday Added Successfully !!");
-      return navigate("/home")
+      toast.success("Birthday Edited Successfully !!");
+      return navigate("/home");
     } catch (error) {
       setLoadingPage(false);
       console.log(error);
-      toast.error("Birthday not added");
+      toast.error("Birthday not Edited. Error occured !!");
     }
-  }
+  };
 
   return (
     <div className="min-h-screen text-gray-800 dark:text-gray-100 pb-28">
@@ -130,7 +132,7 @@ const AddBirthdayPage = () => {
       <div
         className="relative h-[40vh] md:h-[50vh] lg:h-[60vh] w-full bg-cover bg-top rounded-b-[15px] overflow-hidden shadow-md"
         style={{
-          backgroundImage: `url(${whiteBlue})`,
+          backgroundImage: `url(${EditImage})`,
         }}
       >
         <div className="absolute inset-0 bottom-0 bg-black bg-opacity-25 flex flex-col items-start justify-end px-4 py-4">
@@ -144,15 +146,15 @@ const AddBirthdayPage = () => {
             required
           />
           <p className="mt-3 mx-3 mb-3 text-lg md:text-xl text-white font-medium">
-            Add a Birthday
+            Edit the Birthday Added
           </p>
         </div>
         <div className="flex flex-col absolute right-0 mt-10 m-10">
-          <label htmlFor="profilePic" className="cursor-pointer">
+          <label htmlFor="profileImage" className="cursor-pointer">
             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-400 dark:bg-gray-700">
-              {form.profilePic ? (
+              {form.profileImage ? (
                 <img
-                  src={form.profilePic}
+                  src={form.profileImage}
                   alt="Profile"
                   className="w-full h-full object-cover"
                 />
@@ -165,7 +167,7 @@ const AddBirthdayPage = () => {
           </label>
           <input
             type="file"
-            id="profilePic"
+            id="profileImage"
             accept="image/*"
             className="hidden"
             onChange={handleProfilePicChange}
@@ -277,7 +279,7 @@ const AddBirthdayPage = () => {
               type="submit"
               className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-lg transition-all dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-black"
             >
-              Save Birthday
+              Save Edited Birthday
             </button>
             <button className="border border-teal-600 text-teal-600 dark:border-teal-300 dark:text-teal-300 font-semibold px-6 py-3 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-800 transition-all">
               Generate Gift Ideas (AI)
@@ -289,4 +291,4 @@ const AddBirthdayPage = () => {
   );
 };
 
-export default AddBirthdayPage;
+export default EditBirthdaysAdded;
