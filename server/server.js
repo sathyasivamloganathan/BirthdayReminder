@@ -27,7 +27,7 @@ app.use('/api', authenticateUser, birthdayRoute)
 app.get("/", (req, res) => {
     res.send("API is running")
 })
-cron.schedule("40 14 * * *", () => {
+cron.schedule("30 1 * * *", () => {
     console.log("Checking Birthdays....")
     checkAndSendBirthdayReminders();
 })
