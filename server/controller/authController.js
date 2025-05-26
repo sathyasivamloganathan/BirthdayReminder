@@ -5,6 +5,8 @@ import { generateVerificationToken, sendVerificationEmail } from "../mailer/send
 import jwt from "jsonwebtoken"
 import { upload } from "../utils/multer.js";
 // import multer from "multer";
+import dotenv from "dotenv";
+dotenv.config();
 
 export const RegisterUserController = async (req, res) => {
   try {
@@ -26,7 +28,7 @@ export const RegisterUserController = async (req, res) => {
       return res.status(400).json({ message: "Required fields are missing" });
     }
 
-    const hashedPassword = hashPassword(password);
+    const hashedPassword = await hashPassword(password);
     const verificationToken = generateVerificationToken();
     const verificationTokenExpiry = Date.now() + 3600000; // 1 hour expiry
 
@@ -41,8 +43,13 @@ export const RegisterUserController = async (req, res) => {
     });
 
     try {
+      const sendMail = await sendVerificationEmail(email, verificationToken);
+      if(!sendMail) {
+        return res
+        .status(500)
+        .json({ message: "Error at sending mail user" });
+      }
       const saveUser = await newUser.save();
-      await sendVerificationEmail(email, verificationToken);
       return res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
       return res.status(500).json({ message: "Error saving user to database" });
@@ -70,10 +77,7 @@ export const veriyEmailController = async(req, res) => {
         user.verificationTokenExpiry = undefined;
 
         await user.save();
-        return res
-          .status(200)
-          .send("Email successfully verified. You can now log in.");
-
+        return res.redirect(`${process.env.FRONTEND_URL}/auth/login`);
     } catch (error) {
         return res.status(500).send("Error at verify email: ", error);
     }

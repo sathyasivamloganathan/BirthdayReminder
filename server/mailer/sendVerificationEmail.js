@@ -1,11 +1,14 @@
 import crypto from "crypto";
 import nodemailer from  "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const transport = nodemailer.createTransport({
   service: "gmail",
   auth: {
     user: process.env.NODEMAILER_EMAIL,
-    pass: process.env.NODEMAILER_PASS,
+    pass: process.env.NODEMAILER_PASS
   },
 });
 
@@ -23,7 +26,9 @@ export const sendVerificationEmail = async(userEmail, verificationToken) => {
     };
    try {
     await transport.sendMail(mailOptions);
+    return true;
   } catch (error) {
     console.error('Error sending verification email', error);
+    return false;
   }
 };

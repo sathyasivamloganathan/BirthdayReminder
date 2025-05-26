@@ -1,7 +1,7 @@
 import { Router } from "express";
 import {
   addBirthdayController,
-  checkAndSendBirthdayRemainders,
+  checkAndSendBirthdayReminders,
   deleteBirthdayController,
   getAllBirthday,
   getSpecificBirthdayToUpdate,
@@ -37,7 +37,7 @@ route.get("/todayBirthdays", todayBirthdaysController);
 
 route.get("/test-remainder", async (req, res) => {
   try {
-    await checkAndSendBirthdayRemainders();
+    await checkAndSendBirthdayReminders();
     return res.send("Remainder check executed successfully");
   } catch (error) {
     console.error("Caught in route:", error);

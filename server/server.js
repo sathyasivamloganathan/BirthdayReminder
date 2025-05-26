@@ -5,7 +5,7 @@ import dotenv from 'dotenv'
 import { connectDatabase } from "./db/connectDb.js";
 import { authenticateUser } from "./middlewares/middlewares.js";
 import cron from "node-cron";
-import { checkAndSendBirthdayRemainders } from "./controller/birthdayController.js"
+import { checkAndSendBirthdayReminders } from "./controller/birthdayController.js"
 import cors from "cors";
 const app = express();
 
@@ -27,9 +27,9 @@ app.use('/api', authenticateUser, birthdayRoute)
 app.get("/", (req, res) => {
     res.send("API is running")
 })
-cron.schedule("0 19 * * *", () => {
+cron.schedule("0 7 * * *", () => {
     console.log("Checking Birthdays....")
-    checkAndSendBirthdayRemainders();
+    checkAndSendBirthdayReminders();
 })
 
 app.listen(PORT, '0.0.0.0', (req, res) => {

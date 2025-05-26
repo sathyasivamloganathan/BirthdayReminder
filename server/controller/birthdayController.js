@@ -2,7 +2,10 @@ import { BirthdayRemainderSchema } from "../Schema/BirthdayAddingSchema.js";
 import { getUserId } from "../utils/helper.js";
 import { User } from "../Schema/UserSchema.js";
 import moment from "moment-timezone";
-import { sendMail, sendTodayMail } from "../mailer/notificationEmail.js";
+import {
+  sendUpcomingMail,
+  sendTodayMail,
+} from "../mailer/notificationEmail.js";
 
 export const addBirthdayController = async (req, res) => {
   try {
@@ -329,9 +332,10 @@ export const todayBirthdaysController = async (req, res) => {
   }
 };
 
-export const checkAndSendBirthdayRemainders = async () => {
+export const checkAndSendBirthdayReminders = async () => {
   try {
     const users = await User.find();
+
     for (const user of users) {
       const timezone = user.timeZone || "Asia/Kolkata";
       const today = moment().tz(timezone).startOf("day");
@@ -341,18 +345,20 @@ export const checkAndSendBirthdayRemainders = async () => {
       });
 
       for (const b of birthdays) {
-        const bDate = moment(b.birthdayDate);
-        let nextBirthday = moment({
-          year: today.year(),
-          month: bDate.month(),
-          date: bDate.date(),
-        });
+        const bDate = moment(b.birthdayDate).startOf("day");
+        let nextBirthday = moment
+          .tz(
+            { year: today.year(), month: bDate.month(), date: bDate.date() },
+            timezone
+          )
+          .startOf("day");
 
         if (nextBirthday.isBefore(today)) {
           nextBirthday = nextBirthday.add(1, "year");
         }
 
         const daysLeft = nextBirthday.diff(today, "days");
+
 
         if (
           (daysLeft === 30 && b.remainderTime.includes("1 Month Before")) ||
@@ -372,7 +378,7 @@ export const checkAndSendBirthdayRemainders = async () => {
                 bDate.format("MMMM Do")
               );
             } else {
-              await sendMail(
+              await sendUpcomingMail(
                 user.email,
                 user.name,
                 b.name,
@@ -385,6 +391,6 @@ export const checkAndSendBirthdayRemainders = async () => {
     }
   } catch (error) {
     console.error("Error in checkAndSendBirthdayRemainders:", error);
-    throw error; // Rethrow to be caught in route
+    throw error;
   }
 };

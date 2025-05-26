@@ -1,4 +1,7 @@
 import nodemailer from "nodemailer";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 export const transport = nodemailer.createTransport({
   service: "gmail",
@@ -8,7 +11,7 @@ export const transport = nodemailer.createTransport({
   },
 });
 
-export const sendMail = async (userEmail, userName, birthdayPName, date) => {
+export const sendUpcomingMail = async (userEmail, userName, birthdayPName, date) => {
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
     to: userEmail,
@@ -24,7 +27,11 @@ export const sendMail = async (userEmail, userName, birthdayPName, date) => {
   </div>`,
   };
 
-  await transport.sendMail(mailOptions);
+  try {
+    await transport.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Failed to send Upcoming mail: ", error);
+  }
 };
 
 export const sendTodayMail = async (
@@ -48,5 +55,9 @@ export const sendTodayMail = async (
   </div>`,
   };
 
-  await transport.sendMail(mailOptions);
+  try {
+    await transport.sendMail(mailOptions);
+  } catch (error) {
+    console.error("Failed to send mail: ", error)
+  }
 };
