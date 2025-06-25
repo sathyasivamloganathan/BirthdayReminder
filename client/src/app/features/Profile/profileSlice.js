@@ -38,7 +38,7 @@ export const updateProfileDetailsApi = createAsyncThunk(
 );
 
 const initialState = {
-  profile: [],
+  profile: {},
   status: "idle",
   error: null,
 };
@@ -47,13 +47,13 @@ const profileSlice = createSlice({
   initialState,
   reducers: {
     clearProfile(state) {
-      state.profile = [];
+      state.profile = {};
       state.status = "idle";
       state.error = null;
     },
     updateDOB: (state, action) => {
       if(!action.payload) return;
-      state.profile = {...state.profile, ...action.payload};
+      state.profile = {...state.profile, dob: action.payload};
       
     },
   },
@@ -80,7 +80,7 @@ const profileSlice = createSlice({
       })
       .addCase(updateProfileDetailsApi.rejected, (state, action) => {
         state.status = "rejected";
-        state.error = action.error.message;
+        state.error = action.payload || action.error.message;
       });
   },
 });
