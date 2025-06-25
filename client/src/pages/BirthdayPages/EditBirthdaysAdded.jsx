@@ -10,7 +10,7 @@ import { Trash } from "lucide-react";
 import { fetchAllBirthdays } from "../../app/features/Birthdays/allBirthdaysSlice";
 import { useDispatch } from "react-redux";
 
-const remainderTypes = ["Email", "SMS", "Push Notification"];
+const remainderTypes = ["Email"];
 const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
 
 
@@ -88,8 +88,6 @@ const EditBirthdaysAdded = () => {
         formData.append("profileImage", blob, "profile.jpg");
       }
       
-      console.log(form);
-      // Send request
       setLoadingPage(true);
       const res = await axios.put(
         `${API_URL}/api/updateSpecificBirthday/${selectedUser._id}`,
