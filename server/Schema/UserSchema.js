@@ -2,13 +2,18 @@ import mongoose from "mongoose";
 
 const UserSchema = mongoose.Schema(
   {
+    googleId: {
+      type: mongoose.Schema.Types.String,
+    },
     name: {
       type: mongoose.Schema.Types.String,
       required: true,
     },
     mobile: {
       type: mongoose.Schema.Types.Number,
-      required: true,
+      required: function () {
+        return !this.googleId;
+      },
     },
     email: {
       type: mongoose.Schema.Types.String,
@@ -17,11 +22,15 @@ const UserSchema = mongoose.Schema(
     },
     dob: {
       type: mongoose.Schema.Types.String,
-      required: true,
+      required: function () {
+        return !this.googleId;
+      },
     },
     password: {
       type: mongoose.Schema.Types.String,
-      required: true,
+      required: function () {
+        return !this.googleId;
+      },
       minlength: [8, "Password must be atleast 8 characters"],
     },
     profileImage: {
@@ -30,7 +39,7 @@ const UserSchema = mongoose.Schema(
     },
     timeZone: {
       type: String,
-      default: 'UTC',
+      default: "UTC",
     },
     verified: {
       type: Boolean,

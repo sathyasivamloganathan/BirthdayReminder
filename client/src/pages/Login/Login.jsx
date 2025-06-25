@@ -7,15 +7,17 @@ import { useAuth } from "../../context/auth";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../apiConfig";
+import { useDispatch } from "react-redux";
+import { fetchProfileDetails } from "../../app/features/Profile/profileSlice";
+import GoogleLoginButton from "./GoogleLoginButton";
 
 const Login = () => {
-
-  const { setAuth } = useAuth();
+  const { auth, setAuth } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
-
+  const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleChange = (e) => {
@@ -34,12 +36,13 @@ const Login = () => {
         password: formData.password,
       });
       if (res && res.data) {
+        const token = res.data.jwt_token;
         setLoading(false);
-        setAuth({ user: res.data.user, token: res.data.jwt_token });
+        setAuth({ user: res.data.user, token });
+        dispatch(clearProfile());
+        dispatch(fetchProfileDetails(token));
         navigate("/profile");
-        toast.success(
-          "Login Successful !!"
-        );
+        toast.success("Login Successful !!");
       }
     } catch (error) {
       setLoading(false);
@@ -94,10 +97,11 @@ const Login = () => {
             </span>
           </button>
         </form>
+        <GoogleLoginButton />
         <p className="text-sm text-center mt-6 text-textLight dark:text-textDark">
           Don’t have an account?{" "}
           <a
-            href="#"
+            href="/auth/register"
             className="text-primaryLight dark:text-primaryDark underline"
           >
             Sign up

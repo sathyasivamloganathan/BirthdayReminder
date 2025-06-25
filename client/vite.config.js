@@ -50,5 +50,5 @@ export default defineConfig({
   plugins: [react(), svgr(), VitePWA(manifestForPlugIn)],
   server: {
     host: true,
-  }
+  },
 });

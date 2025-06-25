@@ -16,3 +16,11 @@ export const authenticateUser = (req, res, next) => {
         console.log(error);
     }
 }
+
+export const checkCornSecret = (req, res, next) => {
+    const secret = req.headers['x-corn-secret'];
+    if(secret !== process.env.CORN_SECRET) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+    next();
+}

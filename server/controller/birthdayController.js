@@ -152,6 +152,7 @@ export const updateSpecificBirthdayController = async (req, res) => {
       birthdayRemainderOnTheDay,
       repeatYearly,
       customMessage,
+      deleteProfileImage,
     } = req.body;
 
     const updateFields = {
@@ -166,12 +167,15 @@ export const updateSpecificBirthdayController = async (req, res) => {
       repeatYearly,
       customMessage,
     };
-    
+
     if (req.file) {
       updateFields.profileImage = {
         data: req.file.buffer,
         contentType: req.file.mimetype,
       };
+    }
+    if (deleteProfileImage === "true") {
+      updateFields.profileImage = null;
     }
 
     const existing = await BirthdayRemainderSchema.findOne({
@@ -189,7 +193,9 @@ export const updateSpecificBirthdayController = async (req, res) => {
       { new: true }
     );
     if (!updated) {
-      return res.status(404).json({message: "Data not found updateBirthdayController"});
+      return res
+        .status(404)
+        .json({ message: "Data not found updateBirthdayController" });
     }
     return res.status(200).json({ message: "Birthday Updated: ", updated });
   } catch (error) {
@@ -339,6 +345,10 @@ export const checkAndSendBirthdayReminders = async () => {
     for (const user of users) {
       const timezone = user.timeZone || "Asia/Kolkata";
       const today = moment().tz(timezone).startOf("day");
+      const now = moment().tz(timezone);
+      const currHour = now.hour();
+      let currMin = now.minute();
+      currMin = currHour * 60 + currMin;
 
       const birthdays = await BirthdayRemainderSchema.find({
         userId: user._id,
@@ -359,31 +369,42 @@ export const checkAndSendBirthdayReminders = async () => {
 
         const daysLeft = nextBirthday.diff(today, "days");
 
+        let [reminderHour, reminderMinutes] = b.remainderTimeOfDay
+          .split(":")
+          .map(Number);
 
-        if (
+        reminderMinutes = reminderHour * 60 + reminderMinutes;
+
+        const isDaysMatchingSchedule =
           (daysLeft === 30 && b.remainderTime.includes("1 Month Before")) ||
           (daysLeft === 7 && b.remainderTime.includes("1 Week Before")) ||
           (daysLeft === 1 && b.remainderTime.includes("1 Day Before")) ||
-          daysLeft === 0
-        ) {
-          if (b.remainderType.includes("Email")) {
-            if (
-              bDate.date() === today.date() &&
-              bDate.month() === today.month()
-            ) {
-              await sendTodayMail(
-                user.email,
-                user.name,
-                b.name,
-                bDate.format("MMMM Do")
-              );
-            } else {
-              await sendUpcomingMail(
-                user.email,
-                user.name,
-                b.name,
-                bDate.format("MMMM Do")
-              );
+          daysLeft === 0;
+
+        const WINDOW_SIZE = 10;
+        const isReminderTimeMatching =
+          reminderMinutes >= currMin && reminderMinutes < currMin + WINDOW_SIZE;
+        if (isDaysMatchingSchedule) {
+          if (isReminderTimeMatching) {
+            if (b.remainderType.includes("Email")) {
+              if (
+                bDate.date() === today.date() &&
+                bDate.month() === today.month()
+              ) {
+                await sendTodayMail(
+                  user.email,
+                  user.name,
+                  b.name,
+                  bDate.format("MMMM Do")
+                );
+              } else {
+                await sendUpcomingMail(
+                  user.email,
+                  user.name,
+                  b.name,
+                  bDate.format("MMMM Do")
+                );
+              }
             }
           }
         }

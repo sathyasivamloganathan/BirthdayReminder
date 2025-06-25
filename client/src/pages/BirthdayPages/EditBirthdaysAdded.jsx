@@ -5,45 +5,14 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/auth";
 import { API_URL } from "../../apiConfig";
+import ToggleButtonGroup from "../../components/ToggleButtonGroup";
+import { Trash } from "lucide-react";
+import { fetchAllBirthdays } from "../../app/features/Birthdays/allBirthdaysSlice";
 
 const remainderTypes = ["Email", "SMS", "Push Notification"];
 const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
 
-const ToggleButtonGroup = ({ options, selected = [], onChange = () => {} }) => {
-  const handleToggle = (option) => {
-    if (!Array.isArray(selected)) return;
 
-    const updated = selected.includes(option)
-      ? selected.filter((item) => item !== option)
-      : [...selected, option];
-
-    onChange(updated);
-  };
-
-  return (
-    <div className="flex flex-wrap gap-2">
-      {options.map((option) => {
-        const isSelected = selected.includes(option);
-        return (
-          <button
-            key={option}
-            type="button"
-            onClick={() => handleToggle(option)}
-            className={`px-4 py-2 rounded-full border transition-all duration-300
-                ${
-                  isSelected
-                    ? "bg-accentLight text-white dark:bg-accentDark dark:text-black"
-                    : "bg-white text-gray-700 border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600"
-                }
-              `}
-          >
-            {option}
-          </button>
-        );
-      })}
-    </div>
-  );
-};
 
 const EditBirthdaysAdded = () => {
   const { state } = useLocation();
@@ -84,6 +53,14 @@ const EditBirthdaysAdded = () => {
     }
   };
 
+  const deletePhoto = () => {
+    setForm((prev) => ({
+      ...prev,
+      profileImage: null,
+    }))
+    return toast.success("Photo removed, tap save to make changes.");
+  }
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
@@ -103,7 +80,12 @@ const EditBirthdaysAdded = () => {
       formData.append("customMessage", form.customMessage);
 
       const blob = await fetch(form.profileImage).then((res) => res.blob());
-      formData.append("profileImage", blob, "profile.jpg");
+      if(form.profileImage === null || form.profileImage === "") {
+        formData.append("deleteProfileImage", "true");
+      } else {
+        formData.append("profileImage", blob, "profile.jpg");
+      }
+      
       console.log(form);
       // Send request
       setLoadingPage(true);
@@ -118,6 +100,7 @@ const EditBirthdaysAdded = () => {
         }
       );
       setLoadingPage(false);
+      dispatch(fetchAllBirthdays(auth?.token));
       toast.success("Birthday Edited Successfully !!");
       return navigate("/home");
     } catch (error) {
@@ -152,6 +135,13 @@ const EditBirthdaysAdded = () => {
         </div>
         <div className="flex flex-col absolute right-0 mt-10 m-10">
           <label htmlFor="profileImage" className="cursor-pointer">
+            <button
+              onClick={() => deletePhoto()}
+              className="absolute bottom-2 right-5 transform translate-x-1/2 z-50 w-[30px] h-[30px] bg-red-500 flex justify-center align-middle items-center 
+            rounded-full"
+            >
+              <Trash size={18}/>
+            </button>
             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-400 dark:bg-gray-700">
               {form.profileImage ? (
                 <img

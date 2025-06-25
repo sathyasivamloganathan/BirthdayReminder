@@ -18,6 +18,7 @@ export const getDateInLetter = (birthdayDate) => {
 };
 
 export const getNextUpcomingBirthdays = (birthdays) => {
+  if (!Array.isArray(birthdays)) return {};
   const currMonth = new Date().getMonth();
   return birthdays.filter((b) => {
     const personMonth = new Date(b.birthdayDate).getMonth();
@@ -26,6 +27,7 @@ export const getNextUpcomingBirthdays = (birthdays) => {
 };
 
 export const groupBirthdaysByMonth = (birthdays) => {
+  if (!Array.isArray(birthdays)) return {};
   return birthdays.reduce((acc, person) => {
     const month = new Date(person.birthdayDate).getMonth();
     if(!acc[month]) {

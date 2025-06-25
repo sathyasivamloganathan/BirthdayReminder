@@ -22,7 +22,7 @@ export const sendUpcomingMail = async (userEmail, userName, birthdayPName, date)
       <p style="font-size: 16px;">Just a quick reminder that <strong>${birthdayPName}</strong>'s birthday is on <strong>${date}</strong>.</p>
       <p style="font-size: 16px;">Why not plan something special or send a heartfelt message?</p>
       <hr />
-      <p style="font-size: 14px; color: #777;">Set with love from Birthday Reminder App.</p>
+      <p style="font-size: 14px; color: #777;">Set with love from DayMora.</p>
     </div>
   </div>`,
   };
@@ -40,6 +40,7 @@ export const sendTodayMail = async (
   birthdayPName,
   date
 ) => {
+
   const mailOptions = {
     from: process.env.NODEMAILER_EMAIL,
     to: userEmail,
@@ -50,7 +51,7 @@ export const sendTodayMail = async (
       <p style="font-size: 16px;">It's <strong>${birthdayPName}</strong>'s birthday today (<strong>${date}</strong>)!</p>
       <p style="font-size: 16px;">Don't forget to wish them and maybe surprise them with a gift!</p>
       <hr />
-      <p style="font-size: 14px; color: #b8860b;">Brought to you by Birthday Reminder App.</p>
+      <p style="font-size: 14px; color: #b8860b;">Brought to you by DayMora.</p>
     </div>
   </div>`,
   };

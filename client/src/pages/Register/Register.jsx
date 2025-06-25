@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import {PartyIcon} from "../../components/svgIcons/svgIcon";
+import React, { useEffect, useState } from "react";
+import { PartyIcon } from "../../components/svgIcons/svgIcon";
 import {
   ArrowRight,
   BellRing,
@@ -11,7 +11,11 @@ import Form from "../../components/ResusableForm/Form";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
-import { API_URL } from "../../apiConfig";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  getRegisterStatus,
+  registerApi,
+} from "../../app/features/Profile/RegisterSlice";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -24,6 +28,8 @@ const Register = () => {
 
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const registerStatus = useSelector(getRegisterStatus);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -42,36 +48,29 @@ const Register = () => {
         setLoading(false);
         return toast.error("Password must be min 8");
       }
-      const res = await axios.post(`${API_URL}/api/auth/register`, {
-        name: formData.name,
-        dob: formData.dob,
-        mobile: formData.mobile,
-        email: formData.email,
-        password: formData.password,
-      });
 
-      if (res && res.data) {
-        setLoading(false);
-        navigate("/auth/verifyEmail");
-        toast.success("Registration successful. Please check your Email to verify your account.");
-      }
+      dispatch(registerApi(formData));
     } catch (error) {
       setLoading(false);
       console.log(error);
-      if (
-        error.response &&
-        error.response.data &&
-        error.response.data.message
-      ) {
-        toast.error(error.response.data.message);
-      }
-      else {
-        toast.error("Error at Registration");
-      }
-    } finally {
-      setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (registerStatus === "rejected") {
+      toast.error("Error in registering user.");
+    }
+    if (registerStatus === "succeeded") {
+      toast.success(
+        "Registration successful. Please check your Email to verify your account."
+      );
+      navigate("/auth/verifyEmail");
+      setLoading(false);
+    } else if (registerStatus === "rejected") {
+      toast.error("User already exists or registration failed.");
+      setLoading(false);
+    }
+  }, [registerStatus, navigate]);
 
   return (
     <div className="z-0 bg-gradient-to-tr from-[#ffe3ec] via-[#fbd0f1] to-[#eb8aff] dark:from-[#1d102c] dark:via-[#3a0b52] dark:to-[#db2effd9] transition-all duration-700 min-h-screen">

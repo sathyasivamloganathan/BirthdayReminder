@@ -1,12 +1,18 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import whiteBlue from "../../assets/whiteBlue.webp";
 import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../apiConfig";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchTodayBirthdays, getTodayBirthdays } from "../../app/features/Birthdays/todayBirthdaySlice";
+import { useAuth } from "../../context/auth";
+import { fetchUpcomingBirthdays } from "../../app/features/Birthdays/upcomingBirthdaySlice";
+import { fetchAllBirthdays } from "../../app/features/Birthdays/allBirthdaysSlice";
+import { addBirthdaysApi, getAddBirthdayStatus } from "../../app/features/Birthdays/addBirthdaySlice";
 
-
-const remainderTypes = ["Email", "SMS", "Push Notification"];
+const remainderTypes = ["Email"];
+// "SMS", "Push Notification"
 const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
 
 const ToggleButtonGroup = ({ options, selected = [], onChange = () => {} }) => {
@@ -46,6 +52,10 @@ const ToggleButtonGroup = ({ options, selected = [], onChange = () => {} }) => {
 };
 
 const AddBirthdayPage = () => {
+  const dispatch = useDispatch();
+  const { auth } = useAuth();
+  const addBirthdayStatus = useSelector(getAddBirthdayStatus);
+
   const [form, setForm] = useState({
     name: "",
     birthdayDate: "",
@@ -103,24 +113,41 @@ const AddBirthdayPage = () => {
 
       const blob = await fetch(form.profilePic).then((res) => res.blob());
       formData.append("profileImage", blob, "profile.jpg");
-      console.log(form)
       // Send request
       setLoadingPage(true);
-      const res = await axios.post(`${API_URL}/api/addBirthday`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
-      console.log(res);
+      
+      dispatch(addBirthdaysApi(formData));
+      
+
       setLoadingPage(false);
       toast.success("Birthday Added Successfully !!");
-      return navigate("/home")
+
+      const objDate = new Date(form.birthdayDate);
+      objDate.setFullYear(new Date().getFullYear());
+
+      const next30Days = new Date();
+      next30Days.setDate(new Date().getDate() + 30);
+
+      navigate("/home")
+      if (objDate.getDate() === new Date().getDate() && objDate.getMonth() === new Date().getMonth()) {
+        dispatch(fetchTodayBirthdays(auth?.token));
+      } else if (objDate >= new Date() && objDate <= next30Days) {
+        dispatch(fetchUpcomingBirthdays(auth?.token));
+      } else {
+        dispatch(fetchUpcomingBirthdays(auth?.token));
+        dispatch(fetchAllBirthdays(auth?.token));
+      }
+      
     } catch (error) {
       setLoadingPage(false);
       console.log(error);
       toast.error("Birthday not added");
     }
   }
+
+  useEffect(() => {
+    setLoadingPage(addBirthdayStatus);
+  }, [addBirthdayStatus]);
 
   return (
     <div className="min-h-screen text-gray-800 dark:text-gray-100 pb-28">
@@ -271,12 +298,21 @@ const AddBirthdayPage = () => {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-4">
-            <button
-              type="submit"
-              className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-lg transition-all dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-black"
-            >
-              Save Birthday
-            </button>
+            {loadingPage==="loading" ? (
+              <button
+                type="submit"
+                className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-lg transition-all dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-black"
+              >
+                Loading ...
+              </button>
+            ) : (
+              <button
+                type="submit"
+                className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-lg transition-all dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-black"
+              >
+                Save Birthday
+              </button>
+            )}
             <button className="border border-teal-600 text-teal-600 dark:border-teal-300 dark:text-teal-300 font-semibold px-6 py-3 rounded-lg hover:bg-teal-50 dark:hover:bg-teal-800 transition-all">
               Generate Gift Ideas (AI)
             </button>

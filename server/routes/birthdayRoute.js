@@ -10,6 +10,7 @@ import {
   updateSpecificBirthdayController,
 } from "../controller/birthdayController.js";
 import { upload } from "../utils/multer.js";
+import { checkCornSecret } from "../middlewares/middlewares.js";
 
 const route = Router();
 
@@ -35,17 +36,6 @@ route.get("/getUpcomingBirthdays", getUpcomingBirthdays);
 
 route.get("/todayBirthdays", todayBirthdaysController);
 
-route.get("/test-remainder", async (req, res) => {
-  try {
-    await checkAndSendBirthdayReminders();
-    return res.send("Remainder check executed successfully");
-  } catch (error) {
-    console.error("Caught in route:", error);
-    return res.status(500).json({
-      message: "Error in sending remainders",
-      error: error.message || error,
-    });
-  }
-});
+route.get("/test-remainder", checkCornSecret, checkAndSendBirthdayReminders);
 
 export default route;

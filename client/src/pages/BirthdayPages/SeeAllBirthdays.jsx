@@ -5,14 +5,18 @@ import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import BirthdayProfileView from "../../components/BirthdayCards/BirthdayProfileView";
 import { toast } from "react-toastify";
-import axios from "axios";
 import { useAuth } from "../../context/auth";
-import { API_URL } from "../../apiConfig";
-
+import { useDispatch, useSelector } from "react-redux"
+import { deleteBirthdayApi } from "../../app/features/Birthdays/addBirthdaySlice";
+import { fetchUpcomingBirthdays, getUpcomingBirthdays } from "../../app/features/Birthdays/upcomingBirthdaySlice";
+import { fetchAllBirthdays } from "../../app/features/Birthdays/allBirthdaysSlice";
 
 const SeeAllBirthdays = () => {
   const { auth } = useAuth();
   const { state } = useLocation();
+  const dispatch = useDispatch();
+  const upcomingBirthdays = useSelector(getUpcomingBirthdays);
+  
   const allBirthdays = state?.groupedByMonth || [];
 
   const [showModal, setShowModal] = useState(false);
@@ -27,16 +31,11 @@ const SeeAllBirthdays = () => {
   };
 
 
-  const handleDelete = async (id) => {
+  const handleDelete = (id) => {
     try {
-      const res = await axios.delete(
-        `${API_URL}/api/deleteBirthdayAdded/${id}`,
-        {
-          headers: {
-            Authorization: `Bearer ${auth.token}`,
-          },
-        }
-      );
+      dispatch(deleteBirthdayApi({id, token: auth?.token}));
+      dispatch(fetchUpcomingBirthdays(auth?.token));
+      dispatch(fetchAllBirthdays(auth?.token));
       navigate("/home")
     } catch (error) {
       return toast.error("Error in deleting the details")
