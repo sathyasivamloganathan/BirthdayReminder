@@ -5,7 +5,6 @@ import { API_URL } from "../../../apiConfig";
 export const fetchAllBirthdays = createAsyncThunk(
   "allBirthdays/fetchUpcomingBirthdays",
   async (token) => {
-    console.log("upcoming called");
     const res = await axios.get(`${API_URL}/api/getBirthdaysAdded`, {
       headers: {
         Authorization: `Bearer ${token}`,
