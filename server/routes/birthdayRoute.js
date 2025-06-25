@@ -1,7 +1,6 @@
 import { Router } from "express";
 import {
   addBirthdayController,
-  checkAndSendBirthdayReminders,
   deleteBirthdayController,
   getAllBirthday,
   getSpecificBirthdayToUpdate,
@@ -10,7 +9,6 @@ import {
   updateSpecificBirthdayController,
 } from "../controller/birthdayController.js";
 import { upload } from "../utils/multer.js";
-import { checkCornSecret } from "../middlewares/middlewares.js";
 
 const route = Router();
 
