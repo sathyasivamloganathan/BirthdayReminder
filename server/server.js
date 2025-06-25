@@ -33,7 +33,14 @@ app.get("/", (req, res) => {
 //   checkAndSendBirthdayReminders();
 // });
 
-app.get("/send-remainder", checkCronSecret, checkAndSendBirthdayReminders);
+app.get("/send-remainder", checkCronSecret, (req, res) => {
+  checkAndSendBirthdayReminders()
+    .then(() => console.log("Reminders job completed"))
+    .catch((error) => console.error("Reminders job error:", error));
+
+  res.status(200).json({ message: "Reminder job started" });
+});
+
 
 app.listen(PORT, "0.0.0.0", (req, res) => {
   console.log(`Port ${PORT} Connected`);

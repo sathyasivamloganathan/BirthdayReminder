@@ -46,11 +46,11 @@ export const RegisterUserController = async (req, res) => {
     });
 
     try {
+      await newUser.save();
       const sendMail = await sendVerificationEmail(email, verificationToken);
       if (!sendMail) {
         return res.status(500).json({ message: "Error at sending mail user" });
       }
-      const saveUser = await newUser.save();
       return res.status(201).json({ message: "User registered successfully" });
     } catch (error) {
       return res.status(500).json({ message: "Error saving user to database" });
@@ -78,9 +78,7 @@ export const veriyEmailController = async (req, res) => {
     user.verificationTokenExpiry = undefined;
 
     await user.save();
-    if (user.verified) {
-      return res.redirect(`${process.env.FRONTEND_URL}/auth/login`);
-    }
+    return res.redirect(`${process.env.FRONTEND_URL}/auth/login`);
   } catch (error) {
     return res.status(500).send("Error at verify email: ", error);
   }
