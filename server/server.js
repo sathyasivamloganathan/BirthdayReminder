@@ -26,14 +26,13 @@ app.use("/api/auth", authRoute);
 app.use("/api", authenticateUser, birthdayRoute);
 
 app.get("/", (req, res) => {
-  res.send("API is running");
-});
+    res.send("API is running")
+})
+cron.schedule("30 1 * * *", () => {
+    console.log("Checking Birthdays....")
+    checkAndSendBirthdayReminders();
+})
 
-cron.schedule("0 7 * * *", () => {
-  console.log("Checking Birthdays....");
-  checkAndSendBirthdayReminders();
-});
-
-app.listen(PORT, "0.0.0.0", (req, res) => {
-  console.log(`Port ${PORT} Connected`);
-});
+app.listen(PORT, '0.0.0.0', (req, res) => {
+    console.log(`Port ${PORT} Connected`)
+})
