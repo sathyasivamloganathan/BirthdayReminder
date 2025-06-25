@@ -36,6 +36,6 @@ route.get("/getUpcomingBirthdays", getUpcomingBirthdays);
 
 route.get("/todayBirthdays", todayBirthdaysController);
 
-route.get("/test-remainder", checkCornSecret, checkAndSendBirthdayReminders);
+
 
 export default route;

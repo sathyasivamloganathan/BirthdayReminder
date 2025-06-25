@@ -9,9 +9,7 @@ import ToggleButtonGroup from "../../components/ToggleButtonGroup";
 import { Trash } from "lucide-react";
 import { fetchAllBirthdays } from "../../app/features/Birthdays/allBirthdaysSlice";
 import { useDispatch } from "react-redux";
-
-const remainderTypes = ["Email"];
-const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
+import { reminderTimes, reminderTypes } from "../../utils/Reminder";
 
 
 
@@ -71,13 +69,13 @@ const EditBirthdaysAdded = () => {
       formData.append("birthdayDate", form.birthdayDate);
       formData.append("relationship", form.relationship);
       formData.append("notes", form.notes);
-      form.remainderType.forEach((item) => {
-        formData.append("remainderType[]", item);
+      form.reminderType.forEach((item) => {
+        formData.append("reminderType[]", item);
       });
-      form.remainderTime.forEach((item) => {
-        formData.append("remainderTime[]", item);
+      form.reminderTime.forEach((item) => {
+        formData.append("reminderTime[]", item);
       });
-      formData.append("remainderTimeOfDay", form.remainderTimeOfDay);
+      formData.append("reminderTimeOfDay", form.reminderTimeOfDay);
       formData.append("repeatYearly", form.repeatYearly);
       formData.append("customMessage", form.customMessage);
 
@@ -208,10 +206,10 @@ const EditBirthdaysAdded = () => {
           <div className="mt-6">
             <label className="block font-semibold">Reminder Type</label>
             <ToggleButtonGroup
-              options={remainderTypes}
-              selected={form.remainderType}
+              options={reminderTypes}
+              selected={form.reminderType}
               onChange={(selected) =>
-                setForm((prev) => ({ ...prev, remainderType: selected }))
+                setForm((prev) => ({ ...prev, reminderType: selected }))
               }
             />
           </div>
@@ -219,10 +217,10 @@ const EditBirthdaysAdded = () => {
           <div className="mt-6">
             <label className="block font-semibold">Reminder Time</label>
             <ToggleButtonGroup
-              options={remainderTimes}
-              selected={form.remainderTime}
+              options={reminderTimes}
+              selected={form.reminderTime}
               onChange={(selected) =>
-                setForm((prev) => ({ ...prev, remainderTime: selected }))
+                setForm((prev) => ({ ...prev, reminderTime: selected }))
               }
             />
           </div>
@@ -234,8 +232,8 @@ const EditBirthdaysAdded = () => {
               </label>
               <input
                 type="time"
-                name="remainderTimeOfDay"
-                value={form.remainderTimeOfDay}
+                name="reminderTimeOfDay"
+                value={form.reminderTimeOfDay}
                 onChange={handleChange}
                 className="w-full p-3 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800"
               />
