@@ -69,7 +69,7 @@ const BirthdayProfileView = ({ selectedUser, setShowModal, onDelete, onEdit }) =
                     key={time}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition
                     ${
-                      selectedUser.remainderTime?.includes(time)
+                      selectedUser.reminderTime?.includes(time)
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                     }`}
@@ -79,7 +79,7 @@ const BirthdayProfileView = ({ selectedUser, setShowModal, onDelete, onEdit }) =
                 ))}
               </div>
               <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">
-                Time of Day: {selectedUser.remainderTimeOfDay}
+                Time of Day: {selectedUser.reminderTimeOfDay}
               </p>
             </div>
 
@@ -93,7 +93,7 @@ const BirthdayProfileView = ({ selectedUser, setShowModal, onDelete, onEdit }) =
                     key={type}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition
                     ${
-                      selectedUser.remainderType?.includes(type)
+                      selectedUser.reminderType?.includes(type)
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                     }`}
