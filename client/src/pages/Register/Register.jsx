@@ -78,7 +78,7 @@
 //         Join Now !!
 //       </h2>
 //       <p className="text-base text-center text-gray-700 dark:text-gray-300 mb-4">
-//         Join Birthday Buzz to never miss important <br />
+//         Join DayMora to never miss important <br />
 //         celebrations
 //       </p>
 
@@ -124,7 +124,7 @@
 //               <div className="flex flex-col ml-4 pr-4">
 //                 <h2 className="font-bold ">Multiple Notification</h2>
 //                 <h4 className="subTitleFontSize text-justify  mr-4">
-//                   Choose Email, SMS, or Push Notification
+//                   Choose Email
 //                 </h4>
 //               </div>
 //             </div>
@@ -308,7 +308,7 @@ const Register = () => {
       <nav className="sticky top-0 z-50 flex items-center justify-between px-8 py-4 bg-white/50 dark:bg-gray-900/50 backdrop-blur-lg shadow-md">
         <h1 className="text-2xl font-bold flex items-center gap-2 bg-gradient-to-r from-teal-500 to-emerald-500 bg-clip-text text-transparent">
           <PartyPopper className="text-teal-500" />
-          Birthday Buzz
+          DayMora
         </h1>
         <Link
           to="/auth/login"
@@ -335,7 +335,7 @@ const Register = () => {
           </h2>
           <p className="text-lg md:text-xl opacity-90 max-w-xl">
             Never forget a special day again. With{" "}
-            <span className="font-bold text-teal-500">Birthday Buzz</span>,
+            <span className="font-bold text-teal-500">DayMora</span>,
             you’ll get smart reminders, personalized greetings, and tools to
             manage all birthdays in one place.
           </p>
@@ -350,7 +350,7 @@ const Register = () => {
             </li>
             <li className="flex items-center gap-3">
               <Smartphone className="text-teal-500" />
-              <span>Email, SMS & Push Alerts</span>
+              <span>Email</span>
             </li>
           </ul>
         </motion.div>
@@ -439,7 +439,7 @@ const Register = () => {
       {/* Features */}
       <section className="px-10 py-20 text-center bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg">
         <h3 className="text-4xl font-bold mb-12">
-          ✨ Why Choose Birthday Buzz?
+          ✨ Why Choose DayMora?
         </h3>
         <div className="grid md:grid-cols-3 gap-10">
           {[
@@ -497,7 +497,7 @@ const Register = () => {
 
       {/* Footer */}
       <footer className="px-10 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
-        © {new Date().getFullYear()} Birthday Buzz. All Rights Reserved.
+        © {new Date().getFullYear()} DayMora. All Rights Reserved.
       </footer>
     </div>
   );
