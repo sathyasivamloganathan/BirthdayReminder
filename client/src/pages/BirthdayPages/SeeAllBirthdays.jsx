@@ -52,7 +52,7 @@ const SeeAllBirthdays = () => {
   
   return (
     <div className="min-h-screen w-full pb-32">
-      <h2 className="flex flex-row justify-between text-2xl font-bold text-gray-900 dark:text-white pt-12 ml-4 drop-shadow-md">
+      <h2 className="flex flex-row justify-between text-2xl font-bold text-gray-900 dark:text-white mt-12 ml-4 drop-shadow-md">
         <div>Birthdays</div>
         <button
           onClick={() => navigate("/home")}

@@ -48,6 +48,7 @@ const ListAllBirthdays = () => {
 
   // Profile state
   const profileState = useSelector(getProfileDetails);
+  console.log(profileState)
 
   const [nextUpcomoingBirthdays, setNextUpcomingBirthdays] = useState([]);
   const [groupedByMonth, setGroupedByMonth] = useState({});

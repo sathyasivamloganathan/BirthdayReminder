@@ -10,8 +10,10 @@ import { useAuth } from "../../context/auth";
 import { fetchUpcomingBirthdays } from "../../app/features/Birthdays/upcomingBirthdaySlice";
 import { fetchAllBirthdays } from "../../app/features/Birthdays/allBirthdaysSlice";
 import { addBirthdaysApi, getAddBirthdayStatus } from "../../app/features/Birthdays/addBirthdaySlice";
-import { reminderTimes, reminderTypes } from "../../utils/Reminder";
 
+const remainderTypes = ["Email"];
+// "SMS", "Push Notification"
+const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
 
 const ToggleButtonGroup = ({ options, selected = [], onChange = () => {} }) => {
   const handleToggle = (option) => {
@@ -59,9 +61,9 @@ const AddBirthdayPage = () => {
     birthdayDate: "",
     relationship: "",
     notes: "",
-    reminderType: [],
-    reminderTime: [],
-    reminderTimeOfDay: "07:00",
+    remainderType: [],
+    remainderTime: [],
+    remainderTimeOfDay: "07:00",
     repeatYearly: true,
     customMessage: "",
     profilePic: null,
@@ -99,13 +101,13 @@ const AddBirthdayPage = () => {
       formData.append("birthdayDate", form.birthdayDate);
       formData.append("relationship", form.relationship);
       formData.append("notes", form.notes);
-      form.reminderType.forEach((item) => {
-        formData.append("reminderType[]", item);
+      form.remainderType.forEach((item) => {
+        formData.append("remainderType[]", item);
       });
-      form.reminderTime.forEach((item) => {
-        formData.append("reminderTime[]", item);
+      form.remainderTime.forEach((item) => {
+        formData.append("remainderTime[]", item);
       });
-      formData.append("reminderTimeOfDay", form.reminderTimeOfDay);
+      formData.append("remainderTimeOfDay", form.remainderTimeOfDay);
       formData.append("repeatYearly", form.repeatYearly);
       formData.append("customMessage", form.customMessage);
 
@@ -238,10 +240,10 @@ const AddBirthdayPage = () => {
           <div className="mt-6">
             <label className="block font-semibold">Reminder Type</label>
             <ToggleButtonGroup
-              options={reminderTypes}
-              selected={form.reminderType}
+              options={remainderTypes}
+              selected={form.remainderType}
               onChange={(selected) =>
-                setForm((prev) => ({ ...prev, reminderType: selected }))
+                setForm((prev) => ({ ...prev, remainderType: selected }))
               }
             />
           </div>
@@ -249,10 +251,10 @@ const AddBirthdayPage = () => {
           <div className="mt-6">
             <label className="block font-semibold">Reminder Time</label>
             <ToggleButtonGroup
-              options={reminderTimes}
-              selected={form.reminderTime}
+              options={remainderTimes}
+              selected={form.remainderTime}
               onChange={(selected) =>
-                setForm((prev) => ({ ...prev, reminderTime: selected }))
+                setForm((prev) => ({ ...prev, remainderTime: selected }))
               }
             />
           </div>
@@ -264,8 +266,8 @@ const AddBirthdayPage = () => {
               </label>
               <input
                 type="time"
-                name="reminderTimeOfDay"
-                value={form.reminderTimeOfDay}
+                name="remainderTimeOfDay"
+                value={form.remainderTimeOfDay}
                 onChange={handleChange}
                 className="w-full p-3 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800"
               />
