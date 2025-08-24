@@ -256,6 +256,7 @@ import {
   registerApi,
 } from "../../app/features/Profile/RegisterSlice";
 import { motion } from "framer-motion";
+import Logo from "../../../public/android-chrome-512x512.png";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -356,7 +357,7 @@ const Register = () => {
 
           <div className="mt-8 flex justify-center md:justify-start">
             <img
-              src="../../../public/android-chrome-512x512.png"
+              src={Logo}
               alt="Birthday Reminder Illustration"
               className="w-64 md:w-72 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-300"
             />
@@ -503,11 +504,7 @@ const Register = () => {
 
       {/* Footer */}
       <footer className="px-10 py-6 text-center text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
-        <img
-          src="../../../public/android-chrome-512x512.png"
-          alt="DayMora Logo"
-          className="h-16 w-16 rounded-full"
-        />
+        <img src={Logo} alt="DayMora Logo" className="h-16 w-16 rounded-full" />
         © {new Date().getFullYear()} DayMora. All Rights Reserved.
       </footer>
     </div>
