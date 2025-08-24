@@ -335,9 +335,9 @@ const Register = () => {
           </h2>
           <p className="text-lg md:text-xl opacity-90 max-w-xl">
             Never forget a special day again. With{" "}
-            <span className="font-bold text-teal-500">DayMora</span>,
-            you’ll get smart reminders, personalized greetings, and tools to
-            manage all birthdays in one place.
+            <span className="font-bold text-teal-500">DayMora</span>, you’ll get
+            smart reminders, personalized greetings, and tools to manage all
+            birthdays in one place.
           </p>
           <ul className="space-y-4">
             <li className="flex items-center gap-3">
@@ -353,6 +353,14 @@ const Register = () => {
               <span>Email</span>
             </li>
           </ul>
+
+          <div className="mt-8 flex justify-center md:justify-start">
+            <img
+              src="../../../public/android-chrome-512x512.png"
+              alt="Birthday Reminder Illustration"
+              className="w-64 md:w-72 rounded-2xl shadow-lg hover:scale-105 transition-transform duration-300"
+            />
+          </div>
         </motion.div>
 
         {/* Signup Form */}
@@ -438,9 +446,7 @@ const Register = () => {
 
       {/* Features */}
       <section className="px-10 py-20 text-center bg-white/60 dark:bg-gray-900/60 backdrop-blur-lg">
-        <h3 className="text-4xl font-bold mb-12">
-          ✨ Why Choose DayMora?
-        </h3>
+        <h3 className="text-4xl font-bold mb-12">✨ Why Choose DayMora?</h3>
         <div className="grid md:grid-cols-3 gap-10">
           {[
             {
@@ -496,7 +502,12 @@ const Register = () => {
       </section>
 
       {/* Footer */}
-      <footer className="px-10 py-6 text-center text-sm text-gray-600 dark:text-gray-400">
+      <footer className="px-10 py-6 text-center text-sm text-gray-600 dark:text-gray-400 flex items-center justify-center gap-2">
+        <img
+          src="../../../public/android-chrome-512x512.png"
+          alt="DayMora Logo"
+          className="h-16 w-16 rounded-full"
+        />
         © {new Date().getFullYear()} DayMora. All Rights Reserved.
       </footer>
     </div>
