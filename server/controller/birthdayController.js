@@ -15,10 +15,10 @@ export const addBirthdayController = async (req, res) => {
       birthdayDate,
       relationship,
       notes,
-      remainderType,
-      remainderTime,
-      remainderTimeOfDay,
-      birthdayRemainderOnTheDay,
+      reminderType,
+      reminderTime,
+      reminderTimeOfDay,
+      birthdayReminderOnTheDay,
       repeatYearly,
       customMessage,
     } = req.body;
@@ -28,10 +28,10 @@ export const addBirthdayController = async (req, res) => {
       birthdayDate,
       relationship,
       notes,
-      remainderType,
-      remainderTime,
-      remainderTimeOfDay,
-      birthdayRemainderOnTheDay,
+      reminderType,
+      reminderTime,
+      reminderTimeOfDay,
+      birthdayReminderOnTheDay,
       repeatYearly,
       customMessage,
     };
@@ -146,10 +146,10 @@ export const updateSpecificBirthdayController = async (req, res) => {
       birthdayDate,
       relationship,
       notes,
-      remainderType,
-      remainderTime,
-      remainderTimeOfDay,
-      birthdayRemainderOnTheDay,
+      reminderType,
+      reminderTime,
+      reminderTimeOfDay,
+      birthdayReminderOnTheDay,
       repeatYearly,
       customMessage,
       deleteProfileImage,
@@ -160,10 +160,10 @@ export const updateSpecificBirthdayController = async (req, res) => {
       birthdayDate,
       relationship,
       notes,
-      remainderType,
-      remainderTime,
-      remainderTimeOfDay,
-      birthdayRemainderOnTheDay,
+      reminderType,
+      reminderTime,
+      reminderTimeOfDay,
+      birthdayReminderOnTheDay,
       repeatYearly,
       customMessage,
     };
@@ -369,16 +369,16 @@ export const checkAndSendBirthdayReminders = async () => {
 
         const daysLeft = nextBirthday.diff(today, "days");
 
-        let [reminderHour, reminderMinutes] = b.remainderTimeOfDay
+        let [reminderHour, reminderMinutes] = b.reminderTimeOfDay
           .split(":")
           .map(Number);
 
         reminderMinutes = reminderHour * 60 + reminderMinutes;
 
         const isDaysMatchingSchedule =
-          (daysLeft === 30 && b.remainderTime.includes("1 Month Before")) ||
-          (daysLeft === 7 && b.remainderTime.includes("1 Week Before")) ||
-          (daysLeft === 1 && b.remainderTime.includes("1 Day Before")) ||
+          (daysLeft === 30 && b.reminderTime.includes("1 Month Before")) ||
+          (daysLeft === 7 && b.reminderTime.includes("1 Week Before")) ||
+          (daysLeft === 1 && b.reminderTime.includes("1 Day Before")) ||
           daysLeft === 0;
 
         const WINDOW_SIZE = 10;
@@ -386,7 +386,7 @@ export const checkAndSendBirthdayReminders = async () => {
           reminderMinutes >= currMin && reminderMinutes < currMin + WINDOW_SIZE;
         if (isDaysMatchingSchedule) {
           if (isReminderTimeMatching) {
-            if (b.remainderType.includes("Email")) {
+            if (b.reminderType.includes("Email")) {
               if (
                 bDate.date() === today.date() &&
                 bDate.month() === today.month()

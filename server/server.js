@@ -3,8 +3,7 @@ import authRoute from "./routes/authRoute.js";
 import birthdayRoute from "./routes/birthdayRoute.js";
 import dotenv from "dotenv";
 import { connectDatabase } from "./db/connectDb.js";
-import { authenticateUser } from "./middlewares/middlewares.js";
-import cron from "node-cron";
+import { authenticateUser, checkCronSecret } from "./middlewares/middlewares.js";
 import { checkAndSendBirthdayReminders } from "./controller/birthdayController.js";
 import cors from "cors";
 const app = express();
@@ -26,13 +25,24 @@ app.use("/api/auth", authRoute);
 app.use("/api", authenticateUser, birthdayRoute);
 
 app.get("/", (req, res) => {
-    res.send("API is running")
-})
-cron.schedule("30 1 * * *", () => {
-    console.log("Checking Birthdays....")
-    checkAndSendBirthdayReminders();
-})
 
-app.listen(PORT, '0.0.0.0', (req, res) => {
-    console.log(`Port ${PORT} Connected`)
-})
+  res.send("API is running");
+});
+
+// cron.schedule("0 7 * * *", () => {
+//   console.log("Checking Birthdays....");
+//   checkAndSendBirthdayReminders();
+// });
+
+app.get("/send-remainder", checkCronSecret, (req, res) => {
+  checkAndSendBirthdayReminders()
+    .then(() => console.log("Reminders job completed"))
+    .catch((error) => console.error("Reminders job error:", error));
+
+  res.status(200).json({ message: "Reminder job started" });
+});
+
+
+app.listen(PORT, "0.0.0.0", (req, res) => {
+  console.log(`Port ${PORT} Connected`);
+});

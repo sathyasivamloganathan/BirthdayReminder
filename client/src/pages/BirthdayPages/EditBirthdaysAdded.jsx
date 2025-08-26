@@ -8,15 +8,13 @@ import { API_URL } from "../../apiConfig";
 import ToggleButtonGroup from "../../components/ToggleButtonGroup";
 import { Trash } from "lucide-react";
 import { fetchAllBirthdays } from "../../app/features/Birthdays/allBirthdaysSlice";
-
-const remainderTypes = ["Email", "SMS", "Push Notification"];
-const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
-
-
+import { useDispatch } from "react-redux";
+import { reminderTimes, reminderTypes } from "../../utils/Reminder";
 
 const EditBirthdaysAdded = () => {
   const { state } = useLocation();
   const { auth } = useAuth();
+  const dispatch = useDispatch();
 
   const formatDate = (date) => {
     if (!date) return "";
@@ -57,9 +55,9 @@ const EditBirthdaysAdded = () => {
     setForm((prev) => ({
       ...prev,
       profileImage: null,
-    }))
+    }));
     return toast.success("Photo removed, tap save to make changes.");
-  }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -69,25 +67,23 @@ const EditBirthdaysAdded = () => {
       formData.append("birthdayDate", form.birthdayDate);
       formData.append("relationship", form.relationship);
       formData.append("notes", form.notes);
-      form.remainderType.forEach((item) => {
-        formData.append("remainderType[]", item);
+      form.reminderType.forEach((item) => {
+        formData.append("reminderType[]", item);
       });
-      form.remainderTime.forEach((item) => {
-        formData.append("remainderTime[]", item);
+      form.reminderTime.forEach((item) => {
+        formData.append("reminderTime[]", item);
       });
-      formData.append("remainderTimeOfDay", form.remainderTimeOfDay);
+      formData.append("reminderTimeOfDay", form.reminderTimeOfDay);
       formData.append("repeatYearly", form.repeatYearly);
       formData.append("customMessage", form.customMessage);
 
       const blob = await fetch(form.profileImage).then((res) => res.blob());
-      if(form.profileImage === null || form.profileImage === "") {
+      if (form.profileImage === null || form.profileImage === "") {
         formData.append("deleteProfileImage", "true");
       } else {
         formData.append("profileImage", blob, "profile.jpg");
       }
-      
-      console.log(form);
-      // Send request
+
       setLoadingPage(true);
       const res = await axios.put(
         `${API_URL}/api/updateSpecificBirthday/${selectedUser._id}`,
@@ -140,7 +136,7 @@ const EditBirthdaysAdded = () => {
               className="absolute bottom-2 right-5 transform translate-x-1/2 z-50 w-[30px] h-[30px] bg-red-500 flex justify-center align-middle items-center 
             rounded-full"
             >
-              <Trash size={18}/>
+              <Trash size={18} />
             </button>
             <div className="w-32 h-32 rounded-full overflow-hidden border-4 border-white shadow-lg bg-gray-400 dark:bg-gray-700">
               {form.profileImage ? (
@@ -208,10 +204,10 @@ const EditBirthdaysAdded = () => {
           <div className="mt-6">
             <label className="block font-semibold">Reminder Type</label>
             <ToggleButtonGroup
-              options={remainderTypes}
-              selected={form.remainderType}
+              options={reminderTypes}
+              selected={form.reminderType}
               onChange={(selected) =>
-                setForm((prev) => ({ ...prev, remainderType: selected }))
+                setForm((prev) => ({ ...prev, reminderType: selected }))
               }
             />
           </div>
@@ -219,10 +215,10 @@ const EditBirthdaysAdded = () => {
           <div className="mt-6">
             <label className="block font-semibold">Reminder Time</label>
             <ToggleButtonGroup
-              options={remainderTimes}
-              selected={form.remainderTime}
+              options={reminderTimes}
+              selected={form.reminderTime}
               onChange={(selected) =>
-                setForm((prev) => ({ ...prev, remainderTime: selected }))
+                setForm((prev) => ({ ...prev, reminderTime: selected }))
               }
             />
           </div>
@@ -234,8 +230,8 @@ const EditBirthdaysAdded = () => {
               </label>
               <input
                 type="time"
-                name="remainderTimeOfDay"
-                value={form.remainderTimeOfDay}
+                name="reminderTimeOfDay"
+                value={form.reminderTimeOfDay}
                 onChange={handleChange}
                 className="w-full p-3 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800"
               />

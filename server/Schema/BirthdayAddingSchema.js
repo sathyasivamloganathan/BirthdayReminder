@@ -23,23 +23,23 @@ const BirthdayAddingSchema = mongoose.Schema(
       type: mongoose.Schema.Types.String,
       default: "", // Optional
     },
-    remainderType: {
+    reminderType: {
       type: [String],
       enum: ["Email", "Push Notification", "SMS"],
       default: ["Email"],
       required: true,
     },
-    remainderTime: {
+    reminderTime: {
       type: [String],
       enum: ["1 Month Before", "1 Week Before", "1 Day Before"],
       default: ["1 Day Before"],
       required: true,
     },
-    remainderTimeOfDay: {
+    reminderTimeOfDay: {
       type: String,
       default: "07: 00 AM",
     },
-    birthdayRemainderOnTheDay: {
+    birthdayReminderOnTheDay: {
       type: Boolean,
       default: true,
       required: true,

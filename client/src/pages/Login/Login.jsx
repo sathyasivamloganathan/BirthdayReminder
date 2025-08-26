@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../apiConfig";
 import { useDispatch } from "react-redux";
-import { fetchProfileDetails } from "../../app/features/Profile/profileSlice";
+import { clearProfile, fetchProfileDetails } from "../../app/features/Profile/profileSlice";
 import GoogleLoginButton from "./GoogleLoginButton";
 
 const Login = () => {

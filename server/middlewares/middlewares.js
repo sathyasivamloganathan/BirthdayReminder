@@ -17,9 +17,9 @@ export const authenticateUser = (req, res, next) => {
     }
 }
 
-export const checkCornSecret = (req, res, next) => {
-    const secret = req.headers['x-corn-secret'];
-    if(secret !== process.env.CORN_SECRET) {
+export const checkCronSecret = (req, res, next) => {
+    const secret = req.headers['x-cron-secret'];
+    if(secret !== process.env.CRON_SECRET) {
         return res.status(403).json({ message: "Forbidden" });
     }
     next();
