@@ -256,7 +256,7 @@ import {
   registerApi,
 } from "../../app/features/Profile/RegisterSlice";
 import { motion } from "framer-motion";
-import Logo from "../../../public/android-chrome-512x512.png";
+import Logo from "../../assets/android-chrome-512x512.png";
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -463,7 +463,7 @@ const Register = () => {
             {
               icon: <ShieldCheck size={40} />,
               title: "Secure & Private",
-              desc: "Your data is safe with us — privacy and security are our top priorities.",
+              desc : "Your data is safe with us - privacy and security are our top priorities.",
             },
           ].map((f, i) => (
             <motion.div

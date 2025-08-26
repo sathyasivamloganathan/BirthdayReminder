@@ -1,7 +1,12 @@
 import { PencilLine, Trash2, X } from "lucide-react";
 import DefaultUser from "../../assets/DefaultUser.jpg";
-
-const BirthdayProfileView = ({ selectedUser, setShowModal, onDelete, onEdit }) => {
+import { reminderTimes, reminderTypes } from "../../utils/Reminder";
+const BirthdayProfileView = ({
+  selectedUser,
+  setShowModal,
+  onDelete,
+  onEdit,
+}) => {
   const Detail = ({ label, value }) => (
     <p>
       <span className="font-semibold text-gray-700 dark:text-gray-300">
@@ -10,9 +15,6 @@ const BirthdayProfileView = ({ selectedUser, setShowModal, onDelete, onEdit }) =
       <span className="text-gray-900 dark:text-gray-100">{value}</span>
     </p>
   );
-
-  const reminderTimes = ["1 Day Before", "1 Week Before", "1 Month Before"];
-  const reminderTypes = ["Email", "SMS", "Push Notification"];
 
   return (
     <div className="fixed inset-0 z-50 bg-black/40 backdrop-blur-sm flex items-center justify-center p-4 font-sans">
@@ -70,7 +72,7 @@ const BirthdayProfileView = ({ selectedUser, setShowModal, onDelete, onEdit }) =
                     key={time}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition
                     ${
-                      selectedUser.remainderTime?.includes(time)
+                      selectedUser.reminderTime?.includes(time)
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                     }`}
@@ -80,7 +82,7 @@ const BirthdayProfileView = ({ selectedUser, setShowModal, onDelete, onEdit }) =
                 ))}
               </div>
               <p className="text-sm mt-1 text-gray-500 dark:text-gray-400">
-                Time of Day: {selectedUser.remainderTimeOfDay}
+                Time of Day: {selectedUser.reminderTimeOfDay}
               </p>
             </div>
 
@@ -94,7 +96,7 @@ const BirthdayProfileView = ({ selectedUser, setShowModal, onDelete, onEdit }) =
                     key={type}
                     className={`px-3 py-1 rounded-full text-sm font-medium transition
                     ${
-                      selectedUser.remainderType?.includes(type)
+                      selectedUser.reminderType?.includes(type)
                         ? "bg-green-500 text-white"
                         : "bg-gray-200 text-gray-700 dark:bg-gray-700 dark:text-gray-300"
                     }`}

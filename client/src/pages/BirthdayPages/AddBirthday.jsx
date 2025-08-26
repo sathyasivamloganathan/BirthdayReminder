@@ -5,15 +5,18 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_URL } from "../../apiConfig";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchTodayBirthdays, getTodayBirthdays } from "../../app/features/Birthdays/todayBirthdaySlice";
+import {
+  fetchTodayBirthdays,
+  getTodayBirthdays,
+} from "../../app/features/Birthdays/todayBirthdaySlice";
 import { useAuth } from "../../context/auth";
 import { fetchUpcomingBirthdays } from "../../app/features/Birthdays/upcomingBirthdaySlice";
 import { fetchAllBirthdays } from "../../app/features/Birthdays/allBirthdaysSlice";
-import { addBirthdaysApi, getAddBirthdayStatus } from "../../app/features/Birthdays/addBirthdaySlice";
-
-const remainderTypes = ["Email"];
-// "SMS", "Push Notification"
-const remainderTimes = ["1 Month Before", "1 Week Before", "1 Day Before"];
+import {
+  addBirthdaysApi,
+  getAddBirthdayStatus,
+} from "../../app/features/Birthdays/addBirthdaySlice";
+import { reminderTimes, reminderTypes } from "../../utils/Reminder";
 
 const ToggleButtonGroup = ({ options, selected = [], onChange = () => {} }) => {
   const handleToggle = (option) => {
@@ -61,15 +64,15 @@ const AddBirthdayPage = () => {
     birthdayDate: "",
     relationship: "",
     notes: "",
-    remainderType: [],
-    remainderTime: [],
-    remainderTimeOfDay: "07:00",
+    reminderType: [],
+    reminderTime: [],
+    reminderTimeOfDay: "07:00",
     repeatYearly: true,
     customMessage: "",
     profilePic: null,
   });
 
-  const [loadingPage, setLoadingPage] = useState(false)
+  const [loadingPage, setLoadingPage] = useState(false);
   const navigate = useNavigate();
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
@@ -93,7 +96,7 @@ const AddBirthdayPage = () => {
     }
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const formData = new FormData();
@@ -101,13 +104,13 @@ const AddBirthdayPage = () => {
       formData.append("birthdayDate", form.birthdayDate);
       formData.append("relationship", form.relationship);
       formData.append("notes", form.notes);
-      form.remainderType.forEach((item) => {
-        formData.append("remainderType[]", item);
+      form.reminderType.forEach((item) => {
+        formData.append("reminderType[]", item);
       });
-      form.remainderTime.forEach((item) => {
-        formData.append("remainderTime[]", item);
+      form.reminderTime.forEach((item) => {
+        formData.append("reminderTime[]", item);
       });
-      formData.append("remainderTimeOfDay", form.remainderTimeOfDay);
+      formData.append("reminderTimeOfDay", form.reminderTimeOfDay);
       formData.append("repeatYearly", form.repeatYearly);
       formData.append("customMessage", form.customMessage);
 
@@ -115,9 +118,8 @@ const AddBirthdayPage = () => {
       formData.append("profileImage", blob, "profile.jpg");
       // Send request
       setLoadingPage(true);
-      
+
       dispatch(addBirthdaysApi(formData));
-      
 
       setLoadingPage(false);
       toast.success("Birthday Added Successfully !!");
@@ -128,8 +130,11 @@ const AddBirthdayPage = () => {
       const next30Days = new Date();
       next30Days.setDate(new Date().getDate() + 30);
 
-      navigate("/home")
-      if (objDate.getDate() === new Date().getDate() && objDate.getMonth() === new Date().getMonth()) {
+      navigate("/home");
+      if (
+        objDate.getDate() === new Date().getDate() &&
+        objDate.getMonth() === new Date().getMonth()
+      ) {
         dispatch(fetchTodayBirthdays(auth?.token));
       } else if (objDate >= new Date() && objDate <= next30Days) {
         dispatch(fetchUpcomingBirthdays(auth?.token));
@@ -137,13 +142,12 @@ const AddBirthdayPage = () => {
         dispatch(fetchUpcomingBirthdays(auth?.token));
         dispatch(fetchAllBirthdays(auth?.token));
       }
-      
     } catch (error) {
       setLoadingPage(false);
       console.log(error);
       toast.error("Birthday not added");
     }
-  }
+  };
 
   useEffect(() => {
     setLoadingPage(addBirthdayStatus);
@@ -240,10 +244,10 @@ const AddBirthdayPage = () => {
           <div className="mt-6">
             <label className="block font-semibold">Reminder Type</label>
             <ToggleButtonGroup
-              options={remainderTypes}
-              selected={form.remainderType}
+              options={reminderTypes}
+              selected={form.reminderType}
               onChange={(selected) =>
-                setForm((prev) => ({ ...prev, remainderType: selected }))
+                setForm((prev) => ({ ...prev, reminderType: selected }))
               }
             />
           </div>
@@ -251,10 +255,10 @@ const AddBirthdayPage = () => {
           <div className="mt-6">
             <label className="block font-semibold">Reminder Time</label>
             <ToggleButtonGroup
-              options={remainderTimes}
-              selected={form.remainderTime}
+              options={reminderTimes}
+              selected={form.reminderTime}
               onChange={(selected) =>
-                setForm((prev) => ({ ...prev, remainderTime: selected }))
+                setForm((prev) => ({ ...prev, reminderTime: selected }))
               }
             />
           </div>
@@ -266,8 +270,8 @@ const AddBirthdayPage = () => {
               </label>
               <input
                 type="time"
-                name="remainderTimeOfDay"
-                value={form.remainderTimeOfDay}
+                name="reminderTimeOfDay"
+                value={form.reminderTimeOfDay}
                 onChange={handleChange}
                 className="w-full p-3 rounded-lg border dark:border-gray-600 bg-white dark:bg-gray-800"
               />
@@ -298,7 +302,7 @@ const AddBirthdayPage = () => {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-4">
-            {loadingPage==="loading" ? (
+            {loadingPage === "loading" ? (
               <button
                 type="submit"
                 className="bg-teal-600 hover:bg-teal-700 text-white font-semibold px-6 py-3 rounded-lg transition-all dark:bg-teal-400 dark:hover:bg-teal-300 dark:text-black"
