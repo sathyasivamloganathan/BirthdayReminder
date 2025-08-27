@@ -1,8 +1,7 @@
-export const SkeletonLoader = ({lightTheme, darkTheme}) => {
-
+export const SkeletonLoader = ({ lightTheme, darkTheme }) => {
   const lightClasses = {
-    'gray-300': 'bg-gray-300',
-    'green-600': 'bg-green-600',
+    "gray-300": "bg-gray-300",
+    "green-600": "bg-green-600",
   };
 
   const darkClasses = {
@@ -12,8 +11,10 @@ export const SkeletonLoader = ({lightTheme, darkTheme}) => {
 
   return (
     <div className="animate-pulse w-full">
-    {/* <div className="h-4 bg-gray-400 dark:bg-gray-700 rounded w-1/3 mb-2" /> */}
-    <div className={`h-10 rounded-md w-full ${lightClasses[lightTheme]} ${darkClasses[darkTheme]}`} />
-  </div>
+      {/* <div className="h-4 bg-gray-400 dark:bg-gray-700 rounded w-1/3 mb-2" /> */}
+      <div
+        className={`h-10 rounded-md w-full ${lightClasses[lightTheme]} ${darkClasses[darkTheme]}`}
+      > </div>
+    </div>
   );
 };

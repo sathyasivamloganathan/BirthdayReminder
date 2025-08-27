@@ -909,7 +909,7 @@ const Profile = () => {
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-semibold">{label}</h3>
-                    <p
+                    <div
                       className="text-gray-600 dark:text-gray-300 truncate"
                       title={value}
                     >
@@ -923,7 +923,7 @@ const Profile = () => {
                       ) : (
                         value || "—"
                       )}
-                    </p>
+                    </div>
                   </div>
                 </div>
               ))}
