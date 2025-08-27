@@ -25,6 +25,7 @@ app.use("/api/auth", authRoute);
 app.use("/api", authenticateUser, birthdayRoute);
 
 app.get("/", (req, res) => {
+
   res.send("API is running");
 });
 
