@@ -685,6 +685,8 @@ import {
   getProfileStatus,
   updateProfileDetailsApi,
 } from "../../app/features/Profile/profileSlice";
+import { API_URL } from "../../apiConfig";
+
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -798,17 +800,28 @@ const Profile = () => {
           res.blob()
         );
         formData.append("profileImage", blob, "profile.jpg");
-      } else if (!modifyProfile?.profileImage) {
+      } else if (modifyProfile?.profileImage === null) {
         formData.append("deleteProfileImage", "true");
       }
 
       setLoadingPage(true);
-      await dispatch(
+      setModifyProfile(await dispatch(
         updateProfileDetailsApi({ formData, token: auth?.token })
-      ).unwrap();
+      ).unwrap());
+      // const res = await axios.put(
+      //   `${API_URL}/api/auth/updateProfile`,
+      //   formData,
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${auth?.token}`,
+      //       "Content-Type": "multipart/form-data",
+      //     },
+      //   }
+      // );
+      // setModifyProfile(res.data.updatedUser); 
+      toast.success("Profile Updated!");
       setLoadingPage(false);
       setIsEditing(false);
-      toast.success("Profile Updated!");
     } catch (error) {
       setLoadingPage(false);
       toast.error("Profile not updated");
