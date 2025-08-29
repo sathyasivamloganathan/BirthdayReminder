@@ -803,7 +803,9 @@ const Profile = () => {
       }
 
       setLoadingPage(true);
-      dispatch(updateProfileDetailsApi({ formData, token: auth?.token }));
+      await dispatch(
+        updateProfileDetailsApi({ formData, token: auth?.token })
+      ).unwrap();
       setLoadingPage(false);
       setIsEditing(false);
       toast.success("Profile Updated!");
