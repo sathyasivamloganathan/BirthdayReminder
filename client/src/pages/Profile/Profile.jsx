@@ -161,9 +161,8 @@
 
 //       setLoadingPage(true);
 
-      
 //       dispatch(updateProfileDetailsApi({ formData, token: auth?.token }));
-      
+
 //       setLoadingPage(false);
 //       setIsEditing(false);
 //       return toast.success("Profile Updated");
@@ -173,7 +172,6 @@
 //         return toast.error("Profile not updated");
 //     }
 //   };
-
 
 //   const signout = () => {
 //     try {
@@ -210,14 +208,14 @@
 //           {isEditing && (
 //             <button
 //               onClick={() => deletePhoto()}
-//               className="absolute bottom-2 right-5 transform translate-x-1/2 z-50 w-[35px] h-[35px] bg-red-500 flex justify-center align-middle items-center 
+//               className="absolute bottom-2 right-5 transform translate-x-1/2 z-50 w-[35px] h-[35px] bg-red-500 flex justify-center align-middle items-center
 //             rounded-full"
 //             >
 //               <Trash />
 //             </button>
 //           )}
 //           <div
-//             className={`absolute inset-0 rounded-full border-4 border-white dark:border-gray-700 bg-white shadow-xl 
+//             className={`absolute inset-0 rounded-full border-4 border-white dark:border-gray-700 bg-white shadow-xl
 //             overflow-hidden z-10 ${showModal ? "blur-sm" : ""}`}
 //           >
 //             {modifyProfile?.profileImage ? (
@@ -652,11 +650,6 @@
 
 // export default Profile;
 
-
-
-
-
-
 import { useState, useEffect, useContext } from "react";
 import { timeZones } from "../../components/Timezones";
 import { toast } from "react-toastify";
@@ -686,7 +679,6 @@ import {
   updateProfileDetailsApi,
 } from "../../app/features/Profile/profileSlice";
 import { API_URL } from "../../apiConfig";
-
 
 const Profile = () => {
   const dispatch = useDispatch();
@@ -776,8 +768,7 @@ const Profile = () => {
     toast.success("Password updated (click save to confirm).");
   };
 
-  const updateProfileDetails = async (e) => {
-    e.preventDefault();
+  const updateProfileDetails = async () => {
     try {
       const formData = new FormData();
       if (profile.name !== modifyProfile?.name)
@@ -807,11 +798,12 @@ const Profile = () => {
         formData.append("deleteProfileImage", "true");
       }
 
-
       setLoadingPage(true);
-      setModifyProfile(await dispatch(
-        updateProfileDetailsApi({ formData, token: auth?.token })
-      ).unwrap());
+      setModifyProfile(
+        await dispatch(
+          updateProfileDetailsApi({ formData, token: auth?.token })
+        ).unwrap()
+      );
       // const res = await axios.put(
       //   `${API_URL}/api/auth/updateProfile`,
       //   formData,
@@ -822,7 +814,7 @@ const Profile = () => {
       //     },
       //   }
       // );
-      // setModifyProfile(res.data.updatedUser); 
+      // setModifyProfile(res.data.updatedUser);
       toast.success("Profile Updated!");
       setLoadingPage(false);
       setIsEditing(false);
@@ -964,7 +956,13 @@ const Profile = () => {
             </div>
           ) : (
             /* Edit Mode */
-            <form onSubmit={updateProfileDetails} className="space-y-5 mt-8">
+            <form
+              onSubmit={(e) => {
+                e.preventDefault();
+                updateProfileDetails();
+              }}
+              className="space-y-5 mt-8"
+            >
               <input
                 type="file"
                 accept="image/*"
