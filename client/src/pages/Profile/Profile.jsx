@@ -776,7 +776,8 @@ const Profile = () => {
     toast.success("Password updated (click save to confirm).");
   };
 
-  const updateProfileDetails = async () => {
+  const updateProfileDetails = async (e) => {
+    e.preventDefault();
     try {
       const formData = new FormData();
       if (profile.name !== modifyProfile?.name)
