@@ -86,7 +86,7 @@ const profileSlice = createSlice({
   },
 });
 
-export const getProfileDetails = (state) => state.getprofile.profile;
-export const getProfileStatus = (state) => state.getprofile.status;
+export const getProfileDetails = (state) => state.profile.profile;
+export const getProfileStatus = (state) => state.profile.status;
 export const { clearProfile, updateDOB } = profileSlice.actions;
 export default profileSlice.reducer;

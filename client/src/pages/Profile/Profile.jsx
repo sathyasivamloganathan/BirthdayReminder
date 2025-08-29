@@ -792,17 +792,20 @@ const Profile = () => {
       if (profile.timeZone !== modifyProfile?.timeZone)
         formData.append("timeZone", modifyProfile?.timeZone);
 
-      if (
-        modifyProfile?.profileImage?.startsWith("data:") &&
-        profile?.profileImage !== modifyProfile?.profileImage
-      ) {
-        const blob = await fetch(modifyProfile?.profileImage).then((res) =>
-          res.blob()
-        );
-        formData.append("profileImage", blob, "profile.jpg");
-      } else if (modifyProfile?.profileImage === null) {
+      if (modifyProfile?.profileImage) {
+        if (
+          modifyProfile.profileImage.startsWith("data:") &&
+          profile?.profileImage !== modifyProfile?.profileImage
+        ) {
+          const blob = await fetch(modifyProfile.profileImage).then((res) =>
+            res.blob()
+          );
+          formData.append("profileImage", blob, "profile.jpg");
+        }
+      } else {
         formData.append("deleteProfileImage", "true");
       }
+
 
       setLoadingPage(true);
       setModifyProfile(await dispatch(

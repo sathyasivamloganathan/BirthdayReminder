@@ -11,7 +11,7 @@ export const store = configureStore({
     todayBirthdays: todayBirthdaysReducer,
     upcomingBirthdays: upcomingBirthdaysReducer,
     allBirthdays: allBirthdaysReducer,
-    getprofile: profileReducer,
+    profile: profileReducer,
     birthdayActions: birthdayActionsReducer,
 
     register: registerReducer,
