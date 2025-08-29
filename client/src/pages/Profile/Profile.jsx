@@ -771,58 +771,43 @@ const Profile = () => {
   const updateProfileDetails = async () => {
     try {
       const formData = new FormData();
-      if (profile.name !== modifyProfile?.name)
-        formData.append("name", modifyProfile?.name);
-      if (profile.dob !== modifyProfile?.dob)
-        formData.append("dob", modifyProfile?.dob);
-      if (profile.mobile !== modifyProfile?.mobile)
-        formData.append("mobile", modifyProfile?.mobile);
-      if (profile.email !== modifyProfile?.email)
-        formData.append("email", modifyProfile?.email);
-      if (profile.password !== modifyProfile?.password)
-        formData.append("password", modifyProfile?.password);
-      if (profile.timeZone !== modifyProfile?.timeZone)
-        formData.append("timeZone", modifyProfile?.timeZone);
 
-      if (modifyProfile?.profileImage) {
-        if (
-          modifyProfile.profileImage.startsWith("data:") &&
-          profile?.profileImage !== modifyProfile?.profileImage
-        ) {
-          const blob = await fetch(modifyProfile.profileImage).then((res) =>
-            res.blob()
-          );
-          formData.append("profileImage", blob, "profile.jpg");
-        }
-      } else {
+      // Always append all fields, even if unchanged
+      formData.append("name", modifyProfile?.name || "");
+      formData.append("dob", modifyProfile?.dob || "");
+      formData.append("mobile", modifyProfile?.mobile || "");
+      formData.append("email", modifyProfile?.email || "");
+      formData.append("password", modifyProfile?.password || "");
+      formData.append("timeZone", modifyProfile?.timeZone || "");
+
+      // Handle profile image
+      if (modifyProfile?.profileImage?.startsWith("data:")) {
+        const blob = await fetch(modifyProfile.profileImage).then((res) =>
+          res.blob()
+        );
+        formData.append("profileImage", blob, "profile.jpg");
+      } else if (!modifyProfile?.profileImage) {
         formData.append("deleteProfileImage", "true");
       }
 
       setLoadingPage(true);
-      setModifyProfile(
-        await dispatch(
-          updateProfileDetailsApi({ formData, token: auth?.token })
-        ).unwrap()
-      );
-      // const res = await axios.put(
-      //   `${API_URL}/api/auth/updateProfile`,
-      //   formData,
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${auth?.token}`,
-      //       "Content-Type": "multipart/form-data",
-      //     },
-      //   }
-      // );
-      // setModifyProfile(res.data.updatedUser);
+
+      // Dispatch API call
+      const updatedProfile = await dispatch(
+        updateProfileDetailsApi({ formData, token: auth?.token })
+      ).unwrap();
+
+      setModifyProfile(updatedProfile);
       toast.success("Profile Updated!");
       setLoadingPage(false);
       setIsEditing(false);
     } catch (error) {
       setLoadingPage(false);
       toast.error("Profile not updated");
+      console.error("Profile update error:", error);
     }
   };
+
 
   const signout = () => {
     try {
