@@ -30,10 +30,19 @@ export const updateProfileDetailsApi = createAsyncThunk(
           },
         }
       );
-      console.log("Redux: ", res.data)
-      return res.data.updatedUser;
+      const updatedUser = res.data.updatedUser;
+
+      // Convert profileImage to base64 if present
+      if (updatedUser.profileImage?.data) {
+        const binary = new Uint8Array(updatedUser.profileImage.data.data);
+        const base64String = btoa(String.fromCharCode(...binary));
+        updatedUser.profileImage = `data:${updatedUser.profileImage.contentType};base64,${base64String}`;
+      }
+
+
+      return updatedUser;
     } catch (error) {
-      return rejectWithValue(error.res.data);
+      return rejectWithValue(error.response.data || error.message);
     }
   }
 );
