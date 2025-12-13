@@ -347,7 +347,6 @@ export const checkAndSendBirthdayReminders = async () => {
       const currHour = now.hour();
       let currMin = now.minute();
       currMin = currHour * 60 + currMin;
-      console.log("Curr Min"+currMin)
       const birthdays = await BirthdayRemainderSchema.find({
         userId: user._id,
       });
