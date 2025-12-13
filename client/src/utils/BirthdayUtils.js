@@ -20,9 +20,17 @@ export const getDateInLetter = (birthdayDate) => {
 export const getNextUpcomingBirthdays = (birthdays) => {
   if (!Array.isArray(birthdays)) return {};
   const currMonth = new Date().getMonth();
+  const currDate = new Date().getDate();
   return birthdays.filter((b) => {
-    const personMonth = new Date(b.birthdayDate).getMonth();
-    return personMonth > currMonth;
+    const birthDate = new Date(b.birthdayDate);
+    const month = birthDate.getMonth();
+    const day = birthDate.getDate();
+
+    if (month === currMonth && day >= currDate) return true;
+
+    if (month > currMonth) return true;
+
+    return month < currMonth;
   });
 };
 
